@@ -1,0 +1,35 @@
+{
+    "name": "spidertest",
+    "version": "0.0.1",
+    "author": "Allan Boyd <millionyearsold@gmail.com>",
+    "description": "A test framework for verifying links and HTTP request and their responses with automated test generation.",
+    "keywords": "spider, test automation",
+    "bugs": {
+        "url" : "http://github.com/allanmboyd/spidertest/issues"
+    },
+    "main": "lib/spidertest.js",
+    "directories": {
+        "lib": "./lib",
+        "example": "./examples"
+    },
+    "repository" : {
+        "type": "git",
+        "url": "http://github.com/allanmboyd/spidertest.git"
+    },
+    "scripts": {
+        "test": "./node_modules/jshint/bin/hint lib/spider.js test/testSpider.js && ./node_modules/nodeunit/bin/nodeunit test/testSpiderTest.js"
+    },
+    "dependencies" : {
+        "request" : ">= 2.2.9",
+        "routes" : ">= 0.1.0",
+        "cheerio": ">= 0.3.2"
+    },
+    "devDependencies": {
+        "jshint": "0.5.6",
+        "nodeunit": "0.7.1",
+        "should": "0.4.2"
+    },
+    "engine": {
+        "node": ">= 0.6.6"
+    }
+}
