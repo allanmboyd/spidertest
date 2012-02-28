@@ -1,10 +1,14 @@
+var loadModule = require("./testHelpers/moduleLoader.js").loadModule;
 var should = require("should");
-var tunit = require("../lib/spiderTest");
-var Suite = tunit.Suite;
-var Result = tunit.Result;
+
+var spiderTestModule = loadModule("./lib/spiderTest.js");
+var spiderTest = spiderTestModule.module.exports;
+
+var Suite = spiderTest.Suite;
+var Result = spiderTest.Result;
 
 exports.testCreateTestResult = function (test) {
-    var testResult = tunit.createTestResult("testName", Result.PASS, "error");
+    var testResult = spiderTest.createTestResult("testName", Result.PASS);
     should.exist(testResult);
     should.equal("testName", testResult.getName());
     should.equal(Result.PASS, testResult.getResult());
@@ -12,11 +16,11 @@ exports.testCreateTestResult = function (test) {
 };
 
 exports.testCreateSuite = function (test) {
-    var suite = tunit.createSuite("suitename");
+    var suite = spiderTest.createSuite("suitename");
     should.exist(suite);
     should.ok(suite instanceof Suite);
     should.equal("suitename", suite.getName());
-    suite = tunit.createSuite("suitename", "description");
+    suite = spiderTest.createSuite("suitename", "description");
     should.exist(suite);
     should.equal("suitename", suite.getName());
     should.equal("description", suite.getDescription());
