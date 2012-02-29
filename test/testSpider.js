@@ -1,8 +1,15 @@
 var errors = require("../lib/errors");
 var express = require("express");
 var should = require("should");
-var spider = require("../lib/spider")({throwOnMissingRoute: true});
+var spiderOptions = require("../lib/spiderOptions");
+var spiderModule = require("../lib/spider");
+var manualSpider = spiderModule({throwOnMissingRoute: true});
+var autoSpiderAll = spiderModule({
+    throwOnMissingRoute: true,
+    autoSpider: spiderOptions.AUTO.ANCHORS | spiderOptions.AUTO.LINKS | spiderOptions.AUTO.IMAGES | spiderOptions.AUTO.SCRIPTS
+});
 var url = require("url");
+var spider;
 
 process.on('uncaughtException', function (err) {
     console.log(err);
@@ -22,6 +29,7 @@ var serverPort;
 
 module.exports = {
     setUp: function (callback) {
+        spider = null;
         server.listen();
         serverPort = server.address().port;
         callback();
@@ -31,6 +39,7 @@ module.exports = {
         callback();
     },
     testHTMLManualSpider: function (test) {
+        spider = manualSpider;
         var routeCallback = function (payload, $) {
             basicHappyResponseChecks(payload, $);
             basicHappyHTMLChecks(payload, $);
@@ -39,6 +48,7 @@ module.exports = {
         runSpiderTests("/testIndex.html", routeCallback, 3, test.done);
     },
     testCSSManualSpider: function (test) {
+        spider = manualSpider;
         var routeCallback = function (payload, $) {
             basicHappyResponseChecks(payload, $);
             if (payload.url.href.indexOf(".css") !== -1) {
@@ -51,6 +61,7 @@ module.exports = {
         runSpiderTests("/testIndex.html", routeCallback, 2, test.done);
     },
     testJavascriptManualSpider: function (test) {
+        spider = manualSpider;
         var routeCallback = function (payload, $) {
             basicHappyResponseChecks(payload, $);
             if (payload.url.href.indexOf(".js") !== -1) {
@@ -63,6 +74,7 @@ module.exports = {
         runSpiderTests("/testIndex.html", routeCallback, 2, test.done);
     },
     testImgManualSpider: function (test) {
+        spider = manualSpider;
         var routeCallback = function (payload, $) {
             basicHappyResponseChecks(payload, $);
             if (payload.url.href.indexOf(".jpg") !== -1) {
@@ -74,6 +86,7 @@ module.exports = {
         runSpiderTests("/testIndex.html", routeCallback, 2, test.done);
     },
     testContentNotFound: function (test) {
+        spider = manualSpider;
         var routeCallback = function (payload) {
             payload.response.statusCode.should.equal(404);
             test.done();
@@ -81,6 +94,7 @@ module.exports = {
         runSpiderTests("/nopage", routeCallback);
     },
     testNoHostRoute: function (test) {
+        spider = manualSpider;
         try {
             spider.get("http://hello");
             should.fail("Expected a NO_ROUTES_FOR_HOST error");
@@ -93,6 +107,7 @@ module.exports = {
         }
     },
     testNoPathRoute: function (test) {
+        spider = manualSpider;
         try {
             spider
                 .route("localhost:" + serverPort, "/somepath",
@@ -108,6 +123,86 @@ module.exports = {
             }
             test.done();
         }
+    },
+    testAnchorsAutoSpider: function (test) {
+        spider = spiderModule({
+            throwOnMissingRoute: true,
+            autoSpider: spiderOptions.AUTO.ANCHORS
+        });
+        var routeCallback = function (payload, $) {
+            basicHappyResponseChecks(payload, $);
+
+            if (payload.url.href.indexOf(".html") !== -1) {
+                basicHappyHTMLChecks(payload, $);
+            }
+        };
+        runSpiderTests("/testIndex.html", routeCallback, 3, test.done);
+    },
+    testCSSAutoSpider: function (test) {
+        spider = spiderModule({
+            throwOnMissingRoute: true,
+            autoSpider: spiderOptions.AUTO.LINKS
+        });
+        var routeCallback = function (payload, $) {
+            basicHappyResponseChecks(payload, $);
+            if (payload.url.href.indexOf(".css") !== -1) {
+                payload.response.body.should.include("background-color");
+                "text/css; charset=UTF-8".should.equal(payload.response.headers["content-type"]);
+                test.done();
+            }
+        };
+        runSpiderTests("/testIndex.html", routeCallback);
+    },
+    testJavascriptAutoSpider: function (test) {
+        spider = spiderModule({
+            throwOnMissingRoute: true,
+            autoSpider: spiderOptions.AUTO.SCRIPTS
+        });
+
+        var routeCallback = function (payload, $) {
+            basicHappyResponseChecks(payload, $);
+            if (payload.url.href.indexOf(".js") !== -1) {
+                payload.response.body.should.include("strict");
+                "application/javascript".should.equal(payload.response.headers["content-type"]);
+                test.done();
+            }
+        };
+        runSpiderTests("/testIndex.html", routeCallback);
+    },
+    testImgAutoSpider: function (test) {
+        spider = spiderModule({
+            throwOnMissingRoute: true,
+            autoSpider: spiderOptions.AUTO.IMAGES
+        });
+        var routeCallback = function (payload, $) {
+            basicHappyResponseChecks(payload, $);
+            if (payload.url.href.indexOf(".jpg") !== -1) {
+                "image/jpeg".should.equal(payload.response.headers["content-type"]);
+                test.done();
+            }
+        };
+        runSpiderTests("/testIndex.html", routeCallback);
+    },
+    testAutoSpiderAll: function (test) {
+        spider = autoSpiderAll;
+        var routeCallback = function (payload, $) {
+            basicHappyResponseChecks(payload, $);
+            if (payload.url.href.indexOf(".jpg") !== -1) {
+                "image/jpeg".should.equal(payload.response.headers["content-type"]);
+            }
+            if (payload.url.href.indexOf(".js") !== -1) {
+                payload.response.body.should.include("strict");
+                "application/javascript".should.equal(payload.response.headers["content-type"]);
+            }
+            if (payload.url.href.indexOf(".css") !== -1) {
+                payload.response.body.should.include("background-color");
+                "text/css; charset=UTF-8".should.equal(payload.response.headers["content-type"]);
+            }
+            if (payload.url.href.indexOf(".html") !== -1) {
+                basicHappyHTMLChecks(payload, $);
+            }
+        };
+        runSpiderTests("/testIndex.html", routeCallback, 5, test.done);
     }
 };
 
@@ -166,9 +261,9 @@ var basicHappyHTMLChecks = function (payload) {
     "text/html; charset=UTF-8".should.equal(payload.response.headers["content-type"]);
 };
 
-function callSpider($, doc, attr) {
+function callSpider($, tag, attr) {
     attr = attr ? attr : "href";
-    var href = $(doc).attr(attr);
+    var href = $(tag).attr(attr);
     href = url.resolve("http://localhost:" + serverPort, href);
     spider.get(href);
 }
