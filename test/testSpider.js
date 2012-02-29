@@ -1,6 +1,7 @@
+var errors = require("../lib/errors");
 var express = require("express");
 var should = require("should");
-var spider = require("../lib/spider")();
+var spider = require("../lib/spider")({throwOnMissingRoute: true});
 var url = require("url");
 
 process.on('uncaughtException', function (err) {
@@ -29,7 +30,7 @@ module.exports = {
         server.close();
         callback();
     },
-    testHappyHTMLManualSpider: function (test) {
+    testHTMLManualSpider: function (test) {
         var routeCallback = function (payload, $) {
             basicHappyResponseChecks(payload, $);
             basicHappyHTMLChecks(payload, $);
@@ -37,7 +38,7 @@ module.exports = {
         };
         runSpiderTests("/testIndex.html", routeCallback, 3, test.done);
     },
-    testHappyCSSManualSpider: function (test) {
+    testCSSManualSpider: function (test) {
         var routeCallback = function (payload, $) {
             basicHappyResponseChecks(payload, $);
             if (payload.url.href.indexOf(".css") !== -1) {
@@ -49,7 +50,7 @@ module.exports = {
         };
         runSpiderTests("/testIndex.html", routeCallback, 2, test.done);
     },
-    testHappyJavascriptManualSpider: function (test) {
+    testJavascriptManualSpider: function (test) {
         var routeCallback = function (payload, $) {
             basicHappyResponseChecks(payload, $);
             if (payload.url.href.indexOf(".js") !== -1) {
@@ -61,7 +62,7 @@ module.exports = {
         };
         runSpiderTests("/testIndex.html", routeCallback, 2, test.done);
     },
-    testHappyImgManualSpider: function (test) {
+    testImgManualSpider: function (test) {
         var routeCallback = function (payload, $) {
             basicHappyResponseChecks(payload, $);
             if (payload.url.href.indexOf(".jpg") !== -1) {
@@ -79,9 +80,34 @@ module.exports = {
         };
         runSpiderTests("/nopage", routeCallback);
     },
-    testNoRoute: function (test) {
-       spider.log("debug").get("http://hello");
-       test.done();
+    testNoHostRoute: function (test) {
+        try {
+            spider.get("http://hello");
+            should.fail("Expected a NO_ROUTES_FOR_HOST error");
+        } catch (error) {
+            if (error.name !== errors.NO_ROUTES_FOR_HOST.name) {
+                console.log(error.stack);
+                error.name.should.equal(errors.NO_ROUTES_FOR_HOST.name);
+            }
+            test.done();
+        }
+    },
+    testNoPathRoute: function (test) {
+        try {
+            spider
+                .route("localhost:" + serverPort, "/somepath",
+                function() {
+                    should.fail("This should not be called");
+                })
+                .get("http://localhost:" + serverPort + "/noroute");
+            should.fail("Expected a NO_ROUTES_FOR_PATH error");
+        } catch (error) {
+            if (error.name !== errors.NO_ROUTES_FOR_PATH.name) {
+                console.log(error.stack);
+                error.name.should.equal(errors.NO_ROUTES_FOR_PATH.name);
+            }
+            test.done();
+        }
     }
 };
 

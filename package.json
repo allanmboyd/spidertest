@@ -16,11 +16,17 @@
         "type": "git",
         "url": "http://github.com/allanmboyd/spidertest.git"
     },
+    "licenses": [
+        {
+            "type": "MIT",
+            "url": "http://www.opensource.org/licenses/mit-license.php"
+        }
+    ],
     "scripts": {
         "test": "./node_modules/jshint/bin/hint lib/spider.js test/testSpider.js test/testSpiderTest.js && ./node_modules/nodeunit/bin/nodeunit test/testSpider.js test/testSpiderTest.js"
     },
     "dependencies" : {
-        "exceptions" : "0.1.0",
+        "exceptions" : "0.1.1",
         "request" : ">= 2.2.9",
         "routes" : ">= 0.1.0",
         "cheerio": ">= 0.3.2"
