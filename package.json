@@ -23,7 +23,7 @@
         }
     ],
     "scripts": {
-        "test": "./node_modules/jshint/bin/hint lib/spider.js test/testSpider.js test/testSpiderTest.js && ./node_modules/nodeunit/bin/nodeunit test/testSpider.js test/testSpiderTest.js"
+        "test": "./node_modules/jshint/bin/hint lib/spider.js lib/errors.js lib/spiderOptions.js lib/spiderTest.js lib/suiteManager.js test/testSpider.js test/testSuiteManager.js test/testSpiderTest.js && ./node_modules/nodeunit/bin/nodeunit test/testSpider.js test/testSuiteManager.js test/testSpiderTest.js"
     },
     "dependencies" : {
         "exceptions" : "0.1.1",
@@ -38,6 +38,6 @@
         "should": "0.4.2"
     },
     "engine": {
-        "node": ">= 0.6.6"
+        "node": ">= 0.6.13"
     }
 }

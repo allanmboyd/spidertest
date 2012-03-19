@@ -34,5 +34,5 @@ spider
         assert.ok($('head').text().length > 0);
         assert.ok($('body').text().length > 0);
     })
-    .get('htt://nodejs.org/idonotexist')
+    .get('http://nodejs.org/idonotexist')
     .log('info');
