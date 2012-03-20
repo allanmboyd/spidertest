@@ -4,11 +4,11 @@ var should = require("should");
 var suiteManagerModule = loadModule("./lib/suiteManager.js");
 var suiteManager = suiteManagerModule.module.exports;
 
-var Suite = suiteManager.Suite;
-var Result = suiteManager.Result;
+var Suite = suiteManagerModule.Suite;
+var Result = suiteManagerModule.Result;
 
 exports.testCreateTestResult = function (test) {
-    var testResult = suiteManager.createTestResult("testName", Result.PASS);
+    var testResult = suiteManagerModule.createTestResult("testName", Result.PASS);
     should.exist(testResult);
     should.equal("testName", testResult.getName());
     should.equal(Result.PASS, testResult.getResult());
@@ -16,11 +16,11 @@ exports.testCreateTestResult = function (test) {
 };
 
 exports.testCreateSuite = function (test) {
-    var suite = suiteManager.createSuite("suitename");
+    var suite = suiteManagerModule.createSuite("suitename");
     should.exist(suite);
     should.ok(suite instanceof Suite);
     should.equal("suitename", suite.getName());
-    suite = suiteManager.createSuite("suitename", "description");
+    suite = suiteManagerModule.createSuite("suitename", "description");
     should.exist(suite);
     should.equal("suitename", suite.getName());
     should.equal("description", suite.getDescription());
@@ -36,7 +36,13 @@ exports.testRunSuiteTest = function (test) {
     var test1 = function () {
     };
 
-    suiteManager.runSuiteTest("Test1", "Topic1", "Suite1", test1);
+    var testDetails = {
+        testName: "Test1",
+        topicName: "Topic1",
+        suiteName: "Suite1",
+        test: test1
+    };
+    suiteManager.runSuiteTest(testDetails);
 
     var suites = suiteManagerModule.suites;
     should.exist(suites.Suite1);
@@ -46,14 +52,14 @@ exports.testRunSuiteTest = function (test) {
 
     results.length.should.equal(1);
     results[0].getName().should.equal("Test1");
-    results[0].getResult().should.equal(suiteManager.Result.PASS);
+    results[0].getResult().should.equal(suiteManagerModule.Result.PASS);
 
     topic.getName().should.equal("Topic1");
     topic.getTestCount().should.equal(1);
     topic.getSuccessCount().should.equal(1);
     topic.getFailedCount().should.equal(0);
     topic.getErrorCount().should.equal(0);
-    topic.getResult().should.equal(suiteManager.Result.PASS);
+    topic.getResult().should.equal(suiteManagerModule.Result.PASS);
 
     suites.Suite1.getName().should.equal("Suite1");
     suites.Suite1.getTestCount().should.equal(1);

@@ -5,17 +5,6 @@ var should = require("should");
 var spiderTestModule = loadModule("./lib/spiderTest.js");
 var spiderTest = require("../lib/spiderTest");
 
-var server = express.createServer();
-
-server.configure(function() {
-//    server.use(express.logger());
-    server.use(server.router);
-    server.use(express["static"]("test/resources"));
-});
-
-server.listen();
-serverPort = server.address().port;
-
 exports.testResolveUrl = function (test) {
     var url = spiderTestModule.resolveUrl("http://nodejs.org");
     "http:".should.equal(url.protocol);
@@ -24,7 +13,7 @@ exports.testResolveUrl = function (test) {
     "/".should.equal(url.path);
     "nodejs.org:80".should.equal(url.host);
     "http://nodejs.org:80/".should.equal(url.href);
-    
+
     url = spiderTestModule.resolveUrl("hello");
 
     "http:".should.equal(url.protocol);
@@ -39,7 +28,7 @@ exports.testResolveUrl = function (test) {
     "80".should.equal(url.port);
     "localhost:80".should.equal(url.host);
     "http://localhost:80/".should.equal(url.href);
-    
+
     test.done();
 };
 
@@ -54,8 +43,22 @@ exports.testPopulateTestFiles = function (test) {
 };
 
 exports.testRunTests = function (test) {
+    var server = express.createServer();
+
+    server.configure(function() {
+//    server.use(express.logger());
+        server.use(server.router);
+        server.use(express["static"]("test/resources"));
+    });
+
+    server.listen();
+    var serverPort = server.address().port;
+
     // For some reason "process" is not available inside modules that are tested by nodeunit
     // this is why process is used here to establish the test directory
-    spiderTest.runTests("http://localhost:" + serverPort + "/testIndex.html", process.cwd() + "/" + "examples/tests");
-    test.done();
+    spiderTest.runTests("http://localhost:" + serverPort + "/testIndex.html",
+        process.cwd() + "/" + "examples/tests", function() {
+            server.close();
+            test.done();
+        });
 };
