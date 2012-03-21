@@ -57,8 +57,13 @@ exports.testRunTests = function (test) {
     // For some reason "process" is not available inside modules that are tested by nodeunit
     // this is why process is used here to establish the test directory
     spiderTest.runTests("http://localhost:" + serverPort + "/testIndex.html",
-        process.cwd() + "/" + "examples/tests", function() {
+        process.cwd() + "/" + "test/resources/spiderTests");
+    
+    // Use a jnuit reporter
+    var junitReporter = require("../lib/reporters/junit")();
+    spiderTest.runTests("http://localhost:" + serverPort + "/testIndex.html",
+        process.cwd() + "/" + "test/resources/spiderTests", function() {
             server.close();
             test.done();
-        });
+        }, null, junitReporter);
 };
