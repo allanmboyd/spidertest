@@ -42,11 +42,10 @@ exports.testPopulateTestFiles = function (test) {
     test.done();
 };
 
-exports.testRunTests = function (test) {
+exports.testRunTestsWithDefaultReporter = function (test) {
     var server = express.createServer();
 
     server.configure(function() {
-//    server.use(express.logger());
         server.use(server.router);
         server.use(express["static"]("test/resources"));
     });
@@ -57,10 +56,28 @@ exports.testRunTests = function (test) {
     // For some reason "process" is not available inside modules that are tested by nodeunit
     // this is why process is used here to establish the test directory
     spiderTest.runTests("http://localhost:" + serverPort + "/testIndex.html",
-        process.cwd() + "/" + "test/resources/spiderTests");
-    
+        process.cwd() + "/" + "test/resources/spiderTests", function() {
+            server.close();
+            test.done();
+        });
+};
+
+
+exports.testRunTestsWithProvidedReporter = function (test) {
+    var server = express.createServer();
+
+    server.configure(function() {
+        server.use(server.router);
+        server.use(express["static"]("test/resources"));
+    });
+
+    server.listen();
+    var serverPort = server.address().port;
+
+    // For some reason "process" is not available inside modules that are tested by nodeunit
+    // this is why process is used here to establish the test directory
     // Use a jnuit reporter
-    var junitReporter = require("../lib/reporters/junit")();
+    var junitReporter = new (require("../lib/reporters/JUnitReporter")())();
     spiderTest.runTests("http://localhost:" + serverPort + "/testIndex.html",
         process.cwd() + "/" + "test/resources/spiderTests", function() {
             server.close();

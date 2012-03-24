@@ -5,13 +5,13 @@ var suiteManagerModule = loadModule("./lib/suiteManager.js");
 var suiteManager = suiteManagerModule.module.exports;
 
 var Suite = suiteManagerModule.Suite;
-var Result = suiteManagerModule.Result;
+var ResultType = suiteManagerModule.ResultType;
 
 exports.testCreateTestResult = function (test) {
-    var testResult = suiteManagerModule.createTestResult("testName", Result.PASS);
+    var testResult = suiteManagerModule.createTestResult("testName", ResultType.PASS);
     should.exist(testResult);
     should.equal("testName", testResult.getName());
-    should.equal(Result.PASS, testResult.getResult());
+    should.equal(ResultType.PASS, testResult.getResult());
     test.done();
 };
 
@@ -52,14 +52,14 @@ exports.testRunSuiteTest = function (test) {
 
     results.length.should.equal(1);
     results[0].getName().should.equal("Test1");
-    results[0].getResult().should.equal(suiteManagerModule.Result.PASS);
+    results[0].getResult().should.equal(ResultType.PASS);
 
     topic.getName().should.equal("Topic1");
     topic.getTestCount().should.equal(1);
     topic.getSuccessCount().should.equal(1);
     topic.getFailedCount().should.equal(0);
     topic.getErrorCount().should.equal(0);
-    topic.getResult().should.equal(suiteManagerModule.Result.PASS);
+    topic.getResult().should.equal(ResultType.PASS);
 
     suites.Suite1.getName().should.equal("Suite1");
     suites.Suite1.getTestCount().should.equal(1);
