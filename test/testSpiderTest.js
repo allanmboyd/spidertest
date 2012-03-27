@@ -77,7 +77,7 @@ exports.testRunTestsWithProvidedReporter = function (test) {
     // For some reason "process" is not available inside modules that are tested by nodeunit
     // this is why process is used here to establish the test directory
     // Use a jnuit reporter
-    var junitReporter = new (require("../lib/reporters/JUnitReporter")())();
+    var junitReporter = require("../lib/reporters/JUnitReporter").createReporter();
     spiderTest.runTests("http://localhost:" + serverPort + "/testIndex.html",
         process.cwd() + "/" + "test/resources/spiderTests", function() {
             server.close();

@@ -23,12 +23,13 @@
         }
     ],
     "scripts": {
-        "test": "./node_modules/jshint/bin/hint lib/errors.js lib/Reporter.js lib/spider.js  lib/spiderOptions.js lib/spiderTest.js lib/suiteManager.js lib/reporters/ConsoleReporter.js lib/reporters/JUnitReporter.js test/testSpider.js test/testSuiteManager.js test/testSpiderTest.js && ./node_modules/nodeunit/bin/nodeunit test/testSpider.js test/testSuiteManager.js test/testSpiderTest.js"
+        "test": "./node_modules/jshint/bin/hint lib/errors.js lib/Reporter.js lib/spider.js  lib/spiderOptions.js lib/spiderTest.js lib/suiteManager.js lib/reporters/ConsoleReporter.js lib/reporters/JUnitReporter.js lib/reporters/MultiFileJunitReporter.js test/testSpider.js test/testSuiteManager.js test/testSpiderTest.js && ./node_modules/nodeunit/bin/nodeunit test/testSpider.js test/testSuiteManager.js test/testSpiderTest.js"
     },
     "dependencies" : {
         "cheerio": ">= 0.3.2",
         "exceptions" : "0.1.1",
         "formaterrors" : "0.1.1",
+        "logly": "1.1.1",
         "request" : ">= 2.2.9",
         "routes" : ">= 0.1.0",
         "xmldom": ">= 0.1.1"
