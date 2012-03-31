@@ -23,22 +23,24 @@
         }
     ],
     "scripts": {
-        "test": "./node_modules/jshint/bin/hint lib/errors.js lib/Reporter.js lib/spider.js  lib/spiderOptions.js lib/spiderTest.js lib/suiteManager.js lib/reporters/ConsoleReporter.js lib/reporters/JUnitReporter.js lib/reporters/MultiFileJunitReporter.js test/testSpider.js test/testSuiteManager.js test/testSpiderTest.js && ./node_modules/nodeunit/bin/nodeunit test/testSpider.js test/testSuiteManager.js test/testSpiderTest.js"
+        "test": "./node_modules/jshint/bin/hint lib/errors.js lib/Reporter.js lib/spider.js  lib/spiderOptions.js lib/spiderTest.js lib/suiteManager.js lib/reporters/ConsoleReporter.js lib/reporters/JUnitReporter.js lib/reporters/MultiFileJunitReporter.js test/testSpider.js test/testSuiteManager.js test/testSpiderTest.js --config jshint-config.json && ./node_modules/nodeunit/bin/nodeunit test/testSpider.js test/testSuiteManager.js test/testSpiderTest.js"
     },
     "dependencies" : {
         "cheerio": ">= 0.3.2",
         "exceptions" : "0.1.1",
         "formaterrors" : "0.1.1",
-        "logly": "1.1.1",
+        "logly": ">= 1.1.1",
+        "nconf": ">=0.5.1",
+        "optimist": ">= 0.3.1",
         "request" : ">= 2.2.9",
         "routes" : ">= 0.1.0",
         "xmldom": ">= 0.1.1"
     },
     "devDependencies": {
-        "express": "2.5.8",
-        "jshint": "0.5.6",
-        "nodeunit": "0.7.4",
-        "should": "0.4.2"
+        "express": ">= 2.5.8",
+        "jshint": ">= 0.5.6",
+        "nodeunit": ">= 0.7.4",
+        "should": ">= 0.4.2"
     },
     "engine": {
         "node": ">= 0.6.13"
