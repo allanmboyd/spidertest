@@ -10,20 +10,30 @@ initializeOptimist();
 
 var argv = optimist.argv;
 
-if(argv.h || argv.help) {
+if (argv.h || argv.help) {
     optimist.showHelp();
     process.exit(0);
 }
 
 config.argv().env();
 
-if(argv.config){
+if (argv.config) {
     config.file({file: argv.config});
 }
 
 initializeConfigDefaults();
 
-console.log(config.get("reporters"));
+var spiderStartUrl = config.get("spiderStartUrl");
+var testDir = config.get("testDir");
+
+if (!spiderStartUrl || !testDir) {
+    optimist.showHelp();
+    process.exit(-1);
+} else {
+    spiderTest.runTests(spiderStartUrl, testDir, null, null, reporters);
+}
+
+var reporters = initialiseReporters(config.get("reporters"));
 
 function initializeOptimist() {
     importOptionsIntoOptimist();
@@ -44,8 +54,8 @@ function initialiseReporters(reportersArgv) {
 function importOptionsIntoOptimist() {
     for (var option in options) {
         if (options.hasOwnProperty(option)) {
-            for(var optionAttribute in options[option]) {
-                if(options[option].hasOwnProperty(optionAttribute)) {
+            for (var optionAttribute in options[option]) {
+                if (options[option].hasOwnProperty(optionAttribute)) {
                     optimist[optionAttribute](option, options[option][optionAttribute]);
                 }
             }
@@ -57,7 +67,7 @@ function initializeConfigDefaults() {
     var defaults = (function () {
         var d = {};
         for (var option in options) {
-            if(options.hasOwnProperty(option) && options[option]["default"]) {
+            if (options.hasOwnProperty(option) && options[option]["default"]) {
                 d[option] = options[option]["default"];
             }
         }

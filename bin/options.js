@@ -2,13 +2,17 @@ exports.options = {
     "config": {
         "describe": "Path to a json configuration file defining custom options. All command line options - except this one and --help - will be used if present. Options specified directly on the command line override file loaded options."
     },
+    "failOnMissingRoute": {
+        "default": false,
+        "describe": "Set to true if spidering should stop when a route to an encountered link is not available"
+    },
     "help": {
         "alias": "h",
         "describe": "This message."
     },
     "reporters": {
         "alias": "reporters",
-        "default": "lib/reporters/ConsoleReporter",
+        "default": "../lib/reporters/ConsoleReporter",
         "describe": "Comma separated list of paths to reporter.js Reporter implementations for reporting test results."
     },
     "reportOptions": {
@@ -17,7 +21,7 @@ exports.options = {
     "spiderStartUrl": {
         "describe": "The full http url from which to start spidering."
     },
-    "test" : {
-        "describe": "Path to folder or file containing javascript test definitions "
+    "testDir" : {
+        "describe": "Path to folder containing javascript test definitions "
     }
 };
