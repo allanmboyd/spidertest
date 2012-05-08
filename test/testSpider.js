@@ -264,6 +264,8 @@ var basicHappyHTMLChecks = function (payload) {
 function callSpider($, tag, attr) {
     attr = attr ? attr : "href";
     var href = $(tag).attr(attr);
-    href = url.resolve("http://localhost:" + serverPort, href);
-    spider.get(href);
+    if (href) {
+        href = url.resolve("http://localhost:" + serverPort, href);
+        spider.get(href);
+    }
 }
