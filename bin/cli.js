@@ -30,7 +30,7 @@ if (!spiderStartUrl || !testDir) {
     optimist.showHelp();
     process.exit(-1);
 } else {
-    spiderTest.runTests(spiderStartUrl, testDir, null, null, reporters);
+    spiderTest.runTests(spiderStartUrl, testDir, null, null, reporters, config);
 }
 
 var reporters = initialiseReporters(config.get("reporters"));
