@@ -8,6 +8,7 @@
         "url" : "http://github.com/allanmboyd/spidertest/issues"
     },
     "main": "lib/spidertest.js",
+    "preferGlobal": "true",
     "directories": {
         "lib": "./lib",
         "example": "./examples"
@@ -22,7 +23,11 @@
             "url": "http://www.opensource.org/licenses/mit-license.php"
         }
     ],
+    "bin": {
+        "spidertest": "./bin/cli.js"
+    },
     "scripts": {
+        "start": "bin/cli.js",
         "test": "./node_modules/jshint/bin/hint lib/errors.js lib/Reporter.js lib/spider.js  lib/spiderOptions.js lib/spiderTest.js lib/suiteManager.js lib/reporters/ConsoleReporter.js lib/reporters/JUnitReporter.js lib/reporters/MultiFileJunitReporter.js test/testSpider.js test/testSuiteManager.js test/testSpiderTest.js --config jshint-config.json && ./node_modules/nodeunit/bin/nodeunit test/testSpider.js test/testSuiteManager.js test/testSpiderTest.js"
     },
     "dependencies" : {

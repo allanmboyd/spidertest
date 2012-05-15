@@ -6,6 +6,10 @@ exports.options = {
         "default": "false",
         "describe": "Set to true if spidering should stop when a route to an encountered link is not available"
     },
+    "failOnNoResponse": {
+        "default": "false",
+        "describe": "Set to true if spidering should stop when a HTTP request fails to get a response"
+    },
     "help": {
         "alias": "h",
         "describe": "This message."
@@ -14,7 +18,7 @@ exports.options = {
         "default": "../lib/reporters/ConsoleReporter",
         "describe": "Comma separated list of paths to reporter.js Reporter implementations for reporting test results."
     },
-    "reportOptions": {
+    "reporterOptions": {
         "describe": "String of options passed into the createReporter() Reporter function. It is up to the reporter to determine what to do with it."
     },
     "spiderCrossDomain": {

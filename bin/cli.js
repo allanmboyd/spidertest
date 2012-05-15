@@ -1,4 +1,4 @@
-//#!/usr/bin/env node
+#!/usr/bin/env node --max-stack-size=10000000
 
 var config = require("nconf");
 var spiderTest = require("../lib/spiderTest");
@@ -26,6 +26,8 @@ initializeConfigDefaults();
 var spiderStartUrl = config.get("spiderStartUrl");
 var testDir = config.get("testDir");
 
+var reporters = initialiseReporters(config.get("reporters"), config.get("reporterOptions"));
+
 if (!spiderStartUrl || !testDir) {
     optimist.showHelp();
     process.exit(-1);
@@ -33,22 +35,21 @@ if (!spiderStartUrl || !testDir) {
     spiderTest.runTests(spiderStartUrl, testDir, null, null, reporters, config);
 }
 
-var reporters = initialiseReporters(config.get("reporters"));
 
 function initializeOptimist() {
     importOptionsIntoOptimist();
     optimist.wrap(79).usage("Usage: spiderTest [configOption] (see spiderTest -h for more detail)");
 }
 
-function initialiseReporters(reportersArgv) {
+function initialiseReporters(reportersArgv, reporterOptions) {
     var reporterPaths = reportersArgv.split(",");
     var reporters = [];
     reporterPaths.forEach(function(reporterPath) {
         var reporter = require(reporterPath.trim());
-        reporters.push(reporter);
+        reporters.push(reporter.createReporter(reporterOptions));
     });
 
-    return reporterPaths;
+    return reporters;
 }
 
 function importOptionsIntoOptimist() {
