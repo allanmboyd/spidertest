@@ -45,7 +45,7 @@ reports in a variety of formats at different levels of detail as required.
 TODO
 ----
 
-- Provide a means to all request headers to be specified for tests
+- Provide a means to add request headers to be specified for tests
 - Expose more options
 - Better support JSON and XML responses (e.g. like finding URLs in these docs and using them)
 - Maybe support other kinds of HTTP request (other than GET)
@@ -81,8 +81,8 @@ Here is a very basic example:
 The above test definition defines only a single topic with a single test - there can be
 multiple of each within the topics object. The test asserts:
 
-    For any URL that includes a "/" run the associated tests. In this case the associated test
-    is a single test that verifies that the HTTP status code of the response is equal to 200.
+_For any URL that includes a "/" run the associated tests. In this case the associated test
+is a single test that verifies that the HTTP status code of the response is equal to 200._
 
 The name of the topic in the above example is __Common HTTP Tests___ and the name of the test
 is __HTTP responses should have a statusCode of 200__.
@@ -91,14 +91,14 @@ The __urlPattern__ attribute specifies a regular expression to use to match URLs
 URL has the associated tests run against its response. A single URL may be matched multiple times
 in which case all associated tests are run.
 
-*** Spider Payload ***
+### Spider Payload ###
 
 The Spider Payload is the object that is provided to each test assert function upon execution. It contains lots
 of data concerning the response of the associated HTTP request. A sample payload is provided in the examples folder
 as a full description is beyond the scope of this README. However, some of the more obviously useful properties
 are listed below:
 
-**** Response Headers ****
+#### Response Headers ####
 
     spiderPayload.response.headers.<headerName>
 
@@ -110,7 +110,7 @@ Examples:
     spiderPayload.response.headers['accept-language']
     spiderPayload.response.headers['content-type']
 
-**** Request URL ****
+#### Request URL ####
 
     spiderPayload.url
 
@@ -121,15 +121,266 @@ Examples:
     spiderPayload.url.href
     spiderPayload.url.path
 
-**** Response Status ****
+#### Response Status ####
 
     spiderPayload.response.statusCode
 
 Provide the HTTP response status code.
 
-**** Response Body ****
+#### Response Body ####
 
     spiderPayload.response.body
 
 Provide the entire response document as a string.
+
+Installation
+------------
+
+    npm install spidertest
+
+By default spidertest installs globally.
+
+
+Usage
+-----
+
+Some examples:
+
+1. Spider test a website using default options and the tests defined in the examples/tests folder:
+
+    spidertest --testDir=/Users/aboyd/github/spiderTest/examples/tests --spiderStartUrl=http://subways.millionyearsold.com
+
+2. Same as above but this time specify a the JUnitReporter
+
+    spidertest --testDir=/Users/aboyd/github/spiderTest/examples/tests --spiderStartUrl=http://subways.millionyearsold.com --reporters=/Users/aboyd/github/spidertest/lib/reporters/JUnitReporter
+
+Output of spidertest --help:
+
+<pre><code>
+Usage: spiderTest [configOption] (see spiderTest -h for more detail)
+
+Options:
+  --config              Path to a json configuration file defining custom
+                        options. All command line options - except this one
+                        and --help - will be used if present. Options
+                        specified directly on the command line override file
+                        loaded options.
+  --failOnMissingRoute  Set to true if spidering should stop when a route to
+                        an encountered link is not available
+                                                             [default: "false"]
+  --failOnNoResponse    Set to true if spidering should stop when a HTTP
+                        request fails to get a response      [default: "false"]
+  --help, -h            This message.
+  --reporters           Comma separated list of paths to reporter.js Reporter
+                        implementations for reporting test results.
+                                  [default: "../lib/reporters/ConsoleReporter"]
+  --reporterOptions     String of options passed into the createReporter()
+                        Reporter function. It is up to the reporter to
+                        determine what to do with it.
+  --spiderCrossDomain   Allow spidering to continue across different domains
+                                                             [default: "false"]
+  --spiderStartUrl      The full http url from which to start spidering.
+  --testDir             Absolute path to folder containing javascript test
+                        definitions
+
+</pre></code>
+
+Reporters
+---------
+
+Out of the box SpiderTest comes with 3 reporters:
+
+- ConsoleReporter : output to the console in formatted text (this is the default reporter)
+- JUnitReporter : output to the console all test results as a single XML document in JUnit format
+- MultiFileJUnitReporter : output to the file system each test suite result set as an individual file
+
+Any of these (or all of them) can be specified as the reporters for a spidertest run. If no reporter is specified
+as an option then the ConsoleReporter is used.
+
+New reporters can be created either by extended/editing any of the existing reporters or extending Reporter.js.
+
+Reporters are specified using the __reporters__ option which should be a comma separated string of paths to the
+reporter modules to use. See spidertest --help for details.
+
+The Reporter API is described below.
+
+Reporter
+--------
+
+Defines an interface (and abstraction) that should be implemented by SpiderTest Reporter implementations to report
+on the results of a SpiderTest test run.
+
+Reporter instances are provided to a 'spidertest' invocation via command line or file based options. Each Reporter
+instance will have its callback methods invoked when the reporting phase of SpiderTest kicks in subsequent to
+completion of all test executions.
+
+The reporting phase of SpiderTest iterates over all tests result components in the same way a SAX Parser iterates
+over all the nodes of an XML document. Test result components consist of: testsuites, testsuite, topic, test,
+testSuccess, testFailure, testError. These form a hierarchy with testsuites at the root.
+
+When a test result component is encountered during the results phase of SpiderTest one or more corresponding
+callback methods within each provided reporter are invoked. These callback invocations provide the reporter with
+the means to report on the test results.
+
+Each Reporter implementation should extend this Reporter class and override those methods that it needs to perform
+its required reporting function. There is no requirement to override every method.
+
+
+###Reporter.prototype.suitesStart = function ()###
+
+Invoked at the beginning of the reporting phase of SpiderTest. Indicates the start of the reporting phase.
+* * *
+
+
+###Reporter.prototype.suitesEnd = function(testCount, successCount, failedCount, errorCount, suitesTime)###
+
+The final method to be invoked during the reporting phase of SpiderTest. Indicates the end of the reporting phase.
+
+####Parameters####
+
+* testCount *Number* the combined total number of tests executed
+* successCount *Number* the combined total number of tests that passed
+* failedCount *Number* the combined total number of tests that failed
+* errorCount *Number* the combined total number of errors that were generated by tests
+* suitesTime *Number* the combined total time in seconds that it took to execute tests. (Note that this does not include
+the time that it takes to obtain responses from a web site - just the time for test execution against the spidered
+responses.)
+* * *
+
+
+###Reporter.prototype.suiteStart = function(suiteName, suiteDescription, testCount, successCount, failedCount, errorCount, suiteTime)###
+
+Invoked when a new test suite is encountered.
+####Parameters####
+
+* suiteName *String* name of the suite. This is the URL that is associated the the tests within the suite.
+* suiteDescription *String* description of the suite. This is available if defined within the test definition.
+* testCount *Number* the number of tests in the suite
+* successCount *Number* the number of tests that passed in the suite
+* failedCount *Number* the number of tests that failed in the suite
+* errorCount *Number* the number of tests that generated an error (to be clear this refers to errors during
+test execution as defined within the tests definitions and not to errors encountered spidering URLs)
+* suiteTime *Number* the time in seconds that it took to execute the tests in the test suite. (Note that this does not
+include the time that it takes to obtain responses from a web site - just the time for test execution against the
+spidered responses within the suite.)
+* * *
+
+
+###Reporter.prototype.suiteEnd = function()###
+
+Invoked at the end of a testsuite. Merely indicates that a transition to the next suite is about to occur having
+invoked all the callbacks for all the tests within the current test suite.
+* * *
+
+
+###Reporter.prototype.topicStart = function(topicName, topicDescription, testCount, successCount, failedCount, errorCount, topicTime)###
+
+Invoked for each topic within a test suite. A topic allows several related tests to be grouped together.
+####Parameters####
+
+* topicName *String* the topic name as defined by the associated test definition
+* topicDescription *String* the description of the topic as defined by the associated test definition
+* testCount *Number* the number of tests in the topic
+* successCount *Number* the number of tests that passed in the topic
+* failedCount *Number* the number of tests that failed in the topic
+* errorCount *Number* the number of topic tests that generated an error (to be clear this refers to errors during
+test execution as defined within the tests definitions and not to errors encountered spidering URLs)
+* topicTime *Number* the time in seconds that it took to execute the tests in the topic. (Note that this does not
+include the time that it takes to obtain responses from a web site - just the time for test execution against the
+spidered responses within the topic.)
+* * *
+
+
+###Reporter.prototype.topicEnd = function()###
+
+Invoked at the end of a topic. Merely indicates that a transition to the next topic is about to occur having
+invoked all the callbacks for all the tests within the current topic.
+* * *
+
+
+###Reporter.prototype.testStart = function(testName, testTime, testFile)###
+
+Invoked for each test within a topic.
+####Parameters####
+
+* testName *String* the name of the test as defined by the associated test definition
+* testTime *Number* the time in seconds that it took to execute the test. (Note that this does not
+include the time that it takes to obtain responses from a web site - just the time for test execution against the
+spidered response.)
+* testFile *String* the name of the file containing the associated test definition from which the test was drawn
+* * *
+
+
+###Reporter.prototype.testEnd = function()###
+
+Invoked at the end of a test. Merely indicates that a transition to the next test is about to occur having
+invoked all the callbacks associated with the current test.
+* * *
+
+
+###Reporter.prototype.testSuccess = function(testName, testTime, testFile)###
+
+Invoked for each successful test.
+####Parameters####
+
+* testName *String* the name of the test as defined by the associated test definition
+* testTime *Number* the time in seconds that it took to execute the test  (Note that this does not
+include the time that it takes to obtain responses from a web site - just the time for test execution against the
+spidered response.)
+* testFile *String* the name of the file containing the associated test definition from which the test was drawn
+* * *
+
+
+###Reporter.prototype.testFailure = function(testName, error, testTime, testFile)###
+
+Invoked for each failed test.
+####Parameters####
+
+* testName *String* the name of the test as defined by the associated test definition
+* testTime *Number* the time in seconds that it took to execute the test  (Note that this does not
+include the time that it takes to obtain responses from a web site - just the time for test execution against the
+spidered response.)
+* testFile *String* the name of the file containing the associated test definition from which the test was drawn
+* * *
+
+
+###Reporter.prototype.testError = function(testName, error, testTime, testFile)###
+
+Invoked for test that resulted in an error (to be clear this refers to errors during
+test execution as defined within the tests definitions and not to errors encountered spidering URLs)
+####Parameters####
+
+* testName *String* the name of the test as defined by the associated test definition
+* testTime *Number* the time in seconds that it took to execute the test  (Note that this does not
+include the time that it takes to obtain responses from a web site - just the time for test execution against the
+spidered response.)
+* testFile *String* the name of the file containing the associated test definition from which the test was drawn
+* * *
+
+
+###module.exports = function ()###
+
+Reporter implementations should inherit from the Reporter my requiring Reporter and invoking:
+     new Reporter();
+* * *
+
+
+createReporter
+--------------
+
+###exports.createReporter = function (options)###
+
+Reporter implementations should implement this method to return a new instance of their Reporter.
+####Parameters####
+
+* options *String* to pass into the reporter. It is up to the reporter to determine what to do with these
+options.
+
+####Returns####
+
+*Reporter* a new instance of Reporter that would be expected to override at least some of the Reporter
+prototype methods.
+* * *
+
+
 

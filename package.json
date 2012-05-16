@@ -2,7 +2,7 @@
     "name": "spidertest",
     "version": "0.0.1",
     "author": "Allan Boyd <millionyearsold@gmail.com>",
-    "description": "A test framework for verifying links and HTTP request and their responses with automated test generation.",
+    "description": "A test framework for verifying links and HTTP requests and their responses with automated test generation.",
     "keywords": "spider, test automation",
     "bugs": {
         "url" : "http://github.com/allanmboyd/spidertest/issues"
@@ -32,10 +32,10 @@
     },
     "dependencies" : {
         "cheerio": ">= 0.3.2",
-        "exceptions" : "0.1.1",
-        "formaterrors" : "0.1.1",
+        "exceptions" : ">= 0.1.1",
+        "formaterrors" : ">= 0.1.1",
         "logly": ">= 1.1.1",
-        "nconf": ">=0.5.1",
+        "nconf": ">= 0.5.1",
         "optimist": ">= 0.3.1",
         "request" : ">= 2.2.9",
         "routes" : ">= 0.1.0",

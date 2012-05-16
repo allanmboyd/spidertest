@@ -1,0 +1,198 @@
+{
+  "name": "spidertest",
+  "version": "0.0.1",
+  "dependencies": {
+    "cheerio": {
+      "version": "0.7.0",
+      "dependencies": {
+        "cheerio-soupselect": {
+          "version": "0.1.1"
+        },
+        "htmlparser2": {
+          "version": "2.2.2"
+        },
+        "underscore": {
+          "version": "1.3.3"
+        }
+      }
+    },
+    "exceptions": {
+      "version": "0.1.1"
+    },
+    "formaterrors": {
+      "version": "0.1.1",
+      "dependencies": {
+        "diff_match_patch": {
+          "version": "0.1.1"
+        },
+        "stack-trace": {
+          "version": "0.0.6"
+        }
+      }
+    },
+    "logly": {
+      "version": "1.1.1"
+    },
+    "nconf": {
+      "version": "0.5.1",
+      "dependencies": {
+        "async": {
+          "version": "0.1.18"
+        },
+        "ini": {
+          "version": "1.0.2"
+        },
+        "pkginfo": {
+          "version": "0.2.3"
+        }
+      }
+    },
+    "optimist": {
+      "version": "0.3.4",
+      "dependencies": {
+        "wordwrap": {
+          "version": "0.0.2"
+        }
+      }
+    },
+    "request": {
+      "version": "2.9.202"
+    },
+    "routes": {
+      "version": "0.1.1"
+    },
+    "xmldom": {
+      "version": "0.1.2"
+    },
+    "should": {
+      "version": "0.6.3"
+    },
+    "express": {
+      "version": "2.5.9",
+      "dependencies": {
+        "connect": {
+          "version": "1.8.7",
+          "dependencies": {
+            "formidable": {
+              "version": "1.0.9"
+            }
+          }
+        },
+        "mime": {
+          "version": "1.2.4"
+        },
+        "qs": {
+          "version": "0.4.2"
+        },
+        "mkdirp": {
+          "version": "0.3.0"
+        }
+      }
+    },
+    "jshint": {
+      "version": "0.7.0",
+      "dependencies": {
+        "cli": {
+          "version": "0.4.3",
+          "dependencies": {
+            "glob": {
+              "version": "3.1.9",
+              "dependencies": {
+                "minimatch": {
+                  "version": "0.2.4",
+                  "dependencies": {
+                    "lru-cache": {
+                      "version": "1.0.6"
+                    }
+                  }
+                },
+                "graceful-fs": {
+                  "version": "1.1.8"
+                },
+                "inherits": {
+                  "version": "1.0.0"
+                }
+              }
+            }
+          }
+        },
+        "minimatch": {
+          "version": "0.0.5",
+          "dependencies": {
+            "lru-cache": {
+              "version": "1.0.6"
+            }
+          }
+        }
+      }
+    },
+    "nodeunit": {
+      "version": "0.7.4",
+      "dependencies": {
+        "tap": {
+          "version": "0.2.5",
+          "dependencies": {
+            "inherits": {
+              "version": "1.0.0"
+            },
+            "yamlish": {
+              "version": "0.0.5"
+            },
+            "slide": {
+              "version": "1.1.3"
+            },
+            "runforcover": {
+              "version": "0.0.2",
+              "dependencies": {
+                "bunker": {
+                  "version": "0.1.2",
+                  "dependencies": {
+                    "burrito": {
+                      "version": "0.2.11",
+                      "dependencies": {
+                        "traverse": {
+                          "version": "0.5.2"
+                        },
+                        "uglify-js": {
+                          "version": "1.0.7"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "nopt": {
+              "version": "1.0.10",
+              "dependencies": {
+                "abbrev": {
+                  "version": "1.0.3"
+                }
+              }
+            },
+            "mkdirp": {
+              "version": "0.3.2"
+            },
+            "difflet": {
+              "version": "0.2.1",
+              "dependencies": {
+                "traverse": {
+                  "version": "0.6.1"
+                },
+                "charm": {
+                  "version": "0.0.8"
+                }
+              }
+            },
+            "deep-equal": {
+              "version": "0.0.0"
+            },
+            "buffer-equal": {
+              "version": "0.0.0"
+            }
+          }
+        }
+      }
+    }
+  }
+}
