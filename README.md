@@ -1,6 +1,49 @@
 SpiderTest
 ==========
 
+Overview
+--------
+
+SpiderTest is designed for lazy people - like me - who prefer to have a machine not only run a bunch of web tests but
+also to kind of implement them too.
+
+For example my website might have lots of different pages with links to other pages
+and resources like images, css, javascript - whatever. Assuming all of those pages and resources are accessible via
+URLs from some starting page (e.g. the home page) then I would like to make sure that all of those URLs work and that
+they return the correct headers in the response. I might also want to ensure that common features on every html page like
+headers, footers and menus are in the page and as expected. There might a subset of pages that should have the same
+content and I might want to check this is true. I might want to run some tests against CSS or Javascript content that
+is accessed also.
+
+Ideally I don't want to write the same tests multiple times for common features. Also, I don't really want to have
+to keep checking that all my tests cover all the links available especially since someone else could be modifying the
+site. I want the machine to do these things for me.
+
+Finally, I want to have test reporting flexibility. I don't want my reporters to be coupled to the tests. I
+would like to be able to write reporters that don't have to worry about running tests and I would like to
+provide more than one if I want.
+
+SpiderTest aims to provide these features. It takes as input a start URL and a path to a folder containing test definitions
+(it's BDD by the way so tests can be nice and descriptive). If it gets a response from the start URL it
+looks for any tests matching the URL and executes the ones that it finds. Then it looks at the response to find more
+links that it can request. If it finds any then it requests them, gets a response and executes any matching tests and
+so the cycle continues until there are no more URLs to test. Each matching test that it finds it associates with the
+corresponding URL. By discovering URLs and pairing them up with tests SpiderTest could be said to be automating test
+generation. The test results for each URL tested are encapsulated within a test suite result set.
+
+SpiderTest reporters are event driven - or at least event driven in the way SAX parsers are event driven (I'm not saying
+that reporters are SAX parsers btw just that they operate in the same way). When all the tests have been executed the
+test results are iterated. Test results are structured as a hierarchy that comprises of test suites, topics and tests.
+Each visited URL that has one or more associated tests defines a test suite. Within a test suite (i.e. a matched URL)
+there may be multiple topics and each topic may contain multiple individual tests.
+
+Each reporter implements an interface defined within Reporter.js (this is documented below and in the code). The
+reporter callback methods are invoked as the tests are iterated providing the necessary information to generated test
+reports in a variety of formats at different levels of detail as required.
+
+
+
+
 TDB
 
 
