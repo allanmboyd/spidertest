@@ -84,7 +84,7 @@ multiple of each within the topics object. The test asserts:
 _For any URL that includes a "/" run the associated tests. In this case the associated test
 is a single test that verifies that the HTTP status code of the response is equal to 200._
 
-The name of the topic in the above example is __Common HTTP Tests___ and the name of the test
+The name of the topic in the above example is __Common HTTP Tests__ and the name of the test
 is __HTTP responses should have a statusCode of 200__.
 
 The __urlPattern__ attribute specifies a regular expression to use to match URLs. Each matched
@@ -106,6 +106,7 @@ are listed below:
 Provide the values of HTTP response headers.
 
 Examples:
+
     spiderPayload.response.headers['content-length']
     spiderPayload.response.headers['accept-language']
     spiderPayload.response.headers['content-type']
@@ -117,6 +118,7 @@ Examples:
 Provide the URL of the associated HTTP request.
 
 Examples:
+
     spiderPayload.url.host
     spiderPayload.url.href
     spiderPayload.url.path
@@ -383,4 +385,27 @@ prototype methods.
 * * *
 
 
+Testing
+-------
+
+First download. Then install dependencies with:
+
+    npm link
+
+After that to run the tests:
+
+    npm test
+
+
+Contributing
+------------
+
+Contributions are welcome. Please create tests for any updates and ensure jshint is run on any new files. Currently
+npm test will run jshint on all lib and test javascript as well as running all the tests.
+
+
+Bugs & Feature Suggestions
+--------------------------
+
+https://github.com/allanmboyd/spidertest/issues
 
