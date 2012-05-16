@@ -91,154 +91,45 @@ The __urlPattern__ attribute specifies a regular expression to use to match URLs
 URL has the associated tests run against its response. A single URL may be matched multiple times
 in which case all associated tests are run.
 
+*** Spider Payload ***
+
+The Spider Payload is the object that is provided to each test assert function upon execution. It contains lots
+of data concerning the response of the associated HTTP request. A sample payload is provided in the examples folder
+as a full description is beyond the scope of this README. However, some of the more obviously useful properties
+are listed below:
+
+**** Response Headers ****
+
+    spiderPayload.response.headers.<headerName>
 
 
+Provide the values of HTTP response headers.
 
-TDB
+Examples:
+    spiderPayload.response.headers['content-length']
+    spiderPayload.response.headers['accept-language']
+    spiderPayload.response.headers['content-type']
 
+**** Request URL ****
 
-spiderPayload:
+    spiderPayload.url
 
-{ params: {},
-  splats: [ 'testJS/some.js' ],
-  route: '/*',
-  fn: [Function],
-  spider:
-   { autoSpiderAll: 0,
-     throwOnMissingRoute: true,
-     maxSockets: 4,
-     userAgent: 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_4; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7',
-     cache: {},
-     pool: { maxSockets: undefined },
-     options: { throwOnMissingRoute: true, autoSpider: 15 },
-     currentUrl: 'http://localhost:53031/testJS/some.js',
-     routers: { 'localhost:53031': [Object] },
-     urls:
-      [ 'http://localhost:53031/testIndex.html',
-        'http://localhost:53031/anotherPage.html',
-        'http://localhost:53031/testFolder/yetAnotherPage.html',
-        'http://localhost:53031/testImages/original.jpg',
-        'http://localhost:53031/testCss/some.css',
-        'http://localhost:53031/testJS/some.js' ],
-     _events: { log: [Function] } },
-  response:
-   { socket:
-      { _handle: [Object],
-        _pendingWriteReqs: 0,
-        _flags: 0,
-        _connectQueueSize: 0,
-        destroyed: false,
-        bytesRead: 326,
-        bytesWritten: 428,
-        allowHalfOpen: undefined,
-        _connecting: false,
-        writable: true,
-        _events: [Object],
-        _httpMessage: [Object],
-        ondrain: [Function],
-        ondata: [Function],
-        onend: [Function],
-        _connectQueue: null,
-        readable: true },
-     connection:
-      { _handle: [Object],
-        _pendingWriteReqs: 0,
-        _flags: 0,
-        _connectQueueSize: 0,
-        destroyed: false,
-        bytesRead: 326,
-        bytesWritten: 428,
-        allowHalfOpen: undefined,
-        _connecting: false,
-        writable: true,
-        _events: [Object],
-        _httpMessage: [Object],
-        ondrain: [Function],
-        ondata: [Function],
-        onend: [Function],
-        _connectQueue: null,
-        readable: true },
-     httpVersion: '1.1',
-     complete: true,
-     headers:
-      { 'x-powered-by': 'Express',
-        date: 'Tue, 20 Mar 2012 09:12:18 GMT',
-        'cache-control': 'public, max-age=0',
-        'last-modified': 'Mon, 27 Feb 2012 19:45:22 GMT',
-        etag: '"37-1330371922000"',
-        'content-type': 'application/javascript',
-        'accept-ranges': 'bytes',
-        'content-length': '37',
-        connection: 'keep-alive' },
-     trailers: {},
-     readable: false,
-     url: '',
-     method: null,
-     statusCode: 200,
-     client:
-      { _handle: [Object],
-        _pendingWriteReqs: 0,
-        _flags: 0,
-        _connectQueueSize: 0,
-        destroyed: false,
-        bytesRead: 326,
-        bytesWritten: 428,
-        allowHalfOpen: undefined,
-        _connecting: false,
-        writable: true,
-        _events: [Object],
-        _httpMessage: [Object],
-        ondrain: [Function],
-        ondata: [Function],
-        onend: [Function],
-        _connectQueue: null,
-        readable: true },
-     httpVersionMajor: 1,
-     httpVersionMinor: 1,
-     upgrade: false,
-     _events: { end: [Object], close: [Object], data: [Function] },
-     request:
-      { readable: true,
-        writable: true,
-        headers: [Object],
-        pool: [Object],
-        callback: [Function],
-        dests: [],
-        __isRequestRequest: true,
-        _callback: [Function],
-        uri: [Object],
-        _redirectsFollowed: 0,
-        maxRedirects: 10,
-        followRedirect: true,
-        followAllRedirects: false,
-        redirects: [],
-        setHost: true,
-        originalCookieHeader: undefined,
-        _jar: undefined,
-        port: '53031',
-        host: 'localhost',
-        clientErrorHandler: [Function],
-        _events: [Object],
-        path: '/testJS/some.js',
-        httpModule: [Object],
-        agentClass: [Object],
-        agent: [Object],
-        _started: true,
-        method: 'GET',
-        href: 'http://localhost:53031/testJS/some.js',
-        defaultPort: 80,
-        req: [Object],
-        ntick: true,
-        response: [Circular],
-        _destdata: true,
-        _ended: true },
-     body: '(function () {\n    "use strict"\n}());' },
-  url:
-   { protocol: 'http:',
-     slashes: true,
-     host: 'localhost:53031',
-     port: '53031',
-     hostname: 'localhost',
-     href: 'http://localhost:53031/testJS/some.js',
-     pathname: '/testJS/some.js',
-     path: '/testJS/some.js' } }
+Provide the URL of the associated HTTP request.
+
+Examples:
+    spiderPayload.url.host
+    spiderPayload.url.href
+    spiderPayload.url.path
+
+**** Response Status ****
+
+    spiderPayload.response.statusCode
+
+Provide the HTTP response status code.
+
+**** Response Body ****
+
+    spiderPayload.response.body
+
+Provide the entire response document as a string.
+
