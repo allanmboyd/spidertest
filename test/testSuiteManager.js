@@ -40,7 +40,9 @@ exports.testRunSuiteTest = function (test) {
         testName: "Test1",
         topicName: "Topic1",
         suiteName: "Suite1",
-        test: test1
+        test: {
+            assert: test1
+        }
     };
     suiteManager.runSuiteTest(testDetails);
 

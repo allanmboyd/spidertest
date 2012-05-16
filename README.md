@@ -4,8 +4,8 @@ SpiderTest
 Overview
 --------
 
-SpiderTest is designed for lazy people - like me - who prefer to have a machine not only run a bunch of web tests but
-also to kind of implement them too.
+SpiderTest is NodeJS module designed for lazy people - like me - who prefer to have a machine not only run a bunch of
+web tests but also to kind of implement them too.
 
 For example my website might have lots of different pages with links to other pages
 and resources like images, css, javascript - whatever. Assuming all of those pages and resources are accessible via
@@ -37,9 +37,59 @@ test results are iterated. Test results are structured as a hierarchy that compr
 Each visited URL that has one or more associated tests defines a test suite. Within a test suite (i.e. a matched URL)
 there may be multiple topics and each topic may contain multiple individual tests.
 
-Each reporter implements an interface defined within Reporter.js (this is documented below and in the code). The
+Each reporter implements an interface defined within __Reporter.js__ (this is documented below and in the code). The
 reporter callback methods are invoked as the tests are iterated providing the necessary information to generated test
 reports in a variety of formats at different levels of detail as required.
+
+
+TODO
+----
+
+- Provide a means to all request headers to be specified for tests
+- Expose more options
+- Better support JSON and XML responses (e.g. like finding URLs in these docs and using them)
+- Maybe support other kinds of HTTP request (other than GET)
+
+
+Test Definition
+---------------
+
+Tests can use any third party assertion library (at least there are no deliberate restrictions). They
+are defined as an exported javascript object named __topics__. The topics object is composed of
+a collection of topics. Each topic has an associated collection of tests as well as some
+additional attributes that determine things like the URL patterns against which to apply
+the topic tests. Each test within a topic is composed of a test name (which can be descriptive)
+and an associated function that performs the test. The test assert property is a function that receives a single
+parameter called the spiderPayload.
+
+Here is a very basic example:
+
+    var should = require("should");
+    exports.topics = {
+        "Common HTTP Tests" : {
+            urlPattern: "/",
+            tests: {
+                "HTTP responses should have a statusCode of 200": {
+                    assert: function(spiderPayload) {
+                        should.equal(spiderPayload.response.statusCode, 200)
+                    }
+                }
+            }
+        }
+    }
+
+The above test definition defines only a single topic with a single test - there can be
+multiple of each within the topics object. The test asserts:
+
+    For any URL that includes a "/" run the associated tests. In this case the associated test
+    is a single test that verifies that the HTTP status code of the response is equal to 200.
+
+The name of the topic in the above example is __Common HTTP Tests___ and the name of the test
+is __HTTP responses should have a statusCode of 200__.
+
+The __urlPattern__ attribute specifies a regular expression to use to match URLs. Each matched
+URL has the associated tests run against its response. A single URL may be matched multiple times
+in which case all associated tests are run.
 
 
 
