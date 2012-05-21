@@ -19,7 +19,9 @@ exports.options = {
         "describe": "Comma separated list of paths to reporter.js Reporter implementations for reporting test results."
     },
     "reporterOptions": {
-        "describe": "String of options passed into the createReporter() Reporter function. It is up to the reporter to determine what to do with it."
+        "describe": "String of options passed into the createReporter() Reporter function. If the given string is a " +
+            "JSON object it is converted into a JSON object before being passed to the reporters. It is up to the " +
+            "reporter to determine what to do with it."
     },
     "spiderCrossDomain": {
         "default": "false",

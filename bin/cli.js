@@ -1,6 +1,7 @@
 #!/usr/bin/env node --max-stack-size=10000000
 
 var config = require("nconf");
+var cliHelper = require("../lib/cliHelper");
 var spiderTest = require("../lib/spiderTest");
 var optimist = require("optimist");
 var options = require("./options").options;
@@ -26,7 +27,8 @@ initializeConfigDefaults();
 var spiderStartUrl = config.get("spiderStartUrl");
 var testDir = config.get("testDir");
 
-var reporters = initialiseReporters(config.get("reporters"), config.get("reporterOptions"));
+var reporterOptions = cliHelper.objectify(config.get("reporterOptions"));
+var reporters = initialiseReporters(config.get("reporters"), reporterOptions);
 
 if (!spiderStartUrl || !testDir) {
     optimist.showHelp();

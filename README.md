@@ -156,6 +156,11 @@ Some examples:
 
     spidertest --testDir=/Users/aboyd/github/spiderTest/examples/tests --spiderStartUrl=http://subways.millionyearsold.com --reporters=/Users/aboyd/github/spidertest/lib/reporters/JUnitReporter
 
+3. Same as above but this time specify both a ConsoleReporter and a MultiFileJUnitReporter and have the JUnit test
+report files placed into /tmp:
+
+    spidertest --testDir=/Users/aboyd/github/spiderTest/examples/tests --spiderStartUrl=http://subways.millionyearsold.com --reporters=/Users/aboyd/github/spidertest/lib/reporters/MultiFileJUnitReporter,/Users/aboyd/github/spidertest/lib/reporters/ConsoleReporter --reporterOptions='{"outputDir":"/tmp"}'
+
 Output of spidertest --help:
 
 <pre><code>
@@ -177,7 +182,9 @@ Options:
                         implementations for reporting test results.
                                   [default: "../lib/reporters/ConsoleReporter"]
   --reporterOptions     String of options passed into the createReporter()
-                        Reporter function. It is up to the reporter to
+                        Reporter function. If the given string is a JSON
+                        object it is converted into a JSON object before being
+                        passed to the reporters. It is up to the reporter to
                         determine what to do with it.
   --spiderCrossDomain   Allow spidering to continue across different domains
                                                              [default: "false"]
@@ -357,13 +364,6 @@ test execution as defined within the tests definitions and not to errors encount
 include the time that it takes to obtain responses from a web site - just the time for test execution against the
 spidered response.)
 * testFile *String* the name of the file containing the associated test definition from which the test was drawn
-* * *
-
-
-###module.exports = function ()###
-
-Reporter implementations should inherit from the Reporter my requiring Reporter and invoking:
-     new Reporter();
 * * *
 
 
