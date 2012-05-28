@@ -1,6 +1,6 @@
 {
     "name": "spidertest",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "author": "Allan Boyd <millionyearsold@gmail.com>",
     "description": "A test framework for verifying links and HTTP requests and their responses with automated test generation.",
     "keywords": "spider, test automation",
@@ -28,10 +28,10 @@
     },
     "scripts": {
         "start": "bin/cli.js",
-        "test": "./node_modules/jshint/bin/hint lib/cliHelper.js lib/errors.js lib/Reporter.js lib/spider.js  lib/spiderOptions.js lib/spiderTest.js lib/suiteManager.js lib/reporters/ConsoleReporter.js lib/reporters/JUnitReporter.js lib/reporters/MultiFileJunitReporter.js test/testCliHelper.js test/testSpider.js test/testSuiteManager.js test/testSpiderTest.js bin/cli.js --config jshint-config.json && ./node_modules/nodeunit/bin/nodeunit test/testSpider.js test/testSuiteManager.js test/testSpiderTest.js test/testCliHelper.js"
+        "test": "./node_modules/jshint/bin/hint lib/spiderUtils.js lib/errors.js lib/Reporter.js lib/spider.js  lib/spiderOptions.js lib/spiderTest.js lib/suiteManager.js lib/reporters/ConsoleReporter.js lib/reporters/JUnitReporter.js lib/reporters/MultiFileJunitReporter.js test/testSpiderUtils.js test/testSpider.js test/testSuiteManager.js test/testSpiderTest.js bin/cli.js --config jshint-config.json && ./node_modules/nodeunit/bin/nodeunit test/testSpider.js test/testSuiteManager.js test/testSpiderTest.js test/testSpiderUtils.js"
     },
     "dependencies" : {
-        "cheerio": ">= 0.3.2",
+        "cheerio": "0.7.0",
         "exceptions" : ">= 0.1.1",
         "formaterrors" : ">= 0.1.1",
         "logly": ">= 1.1.1",
@@ -39,12 +39,13 @@
         "optimist": ">= 0.3.1",
         "request" : ">= 2.2.9",
         "routes" : ">= 0.1.0",
+        "underscore" : ">=1.3.3",
         "xmldom": ">= 0.1.1"
     },
     "devDependencies": {
         "express": ">= 2.5.8",
-        "jshint": ">= 0.5.6",
-        "nodeunit": ">= 0.7.4",
+        "jshint": "0.7.0",
+        "nodeunit": "0.7.4",
         "should": ">= 0.4.2"
     },
     "engine": {

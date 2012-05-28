@@ -1,7 +1,7 @@
 #!/usr/bin/env node --max-stack-size=10000000
 
 var config = require("nconf");
-var cliHelper = require("../lib/cliHelper");
+var cliHelper = require("../lib/spiderUtils");
 var spiderTest = require("../lib/spiderTest");
 var optimist = require("optimist");
 var options = require("./options").options;

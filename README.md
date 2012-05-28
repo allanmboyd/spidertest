@@ -1,6 +1,9 @@
 SpiderTest
 ==========
 
+Test HTTP responses from URLs obtained by spidering, discovering URLs and selecting requests and tests based on
+URL patterns.
+
 Overview
 --------
 
@@ -20,16 +23,17 @@ to keep checking that all my tests cover all the links available especially sinc
 site. I want the machine to do these things for me.
 
 Finally, I want to have test reporting flexibility. I don't want my reporters to be coupled to the tests. I
-would like to be able to write reporters that don't have to worry about running tests and I would like to
-provide more than one if I want.
+would like to be able to write reporters against a flexible API that don't have to worry about running tests and I
+would like to provide more than one if I want.
 
 SpiderTest aims to provide these features. It takes as input a start URL and a path to a folder containing test definitions
 (it's BDD by the way so tests can be nice and descriptive). If it gets a response from the start URL it
 looks for any tests matching the URL and executes the ones that it finds. Then it looks at the response to find more
-links that it can request. If it finds any then it requests them, gets a response and executes any matching tests and
-so the cycle continues until there are no more URLs to test. Each matching test that it finds it associates with the
-corresponding URL. By discovering URLs and pairing them up with tests SpiderTest could be said to be automating test
-generation. The test results for each URL tested are encapsulated within a test suite result set.
+links that it can request. If it finds any that match any of its tests then it requests them, gets a response and
+executes any matching tests and so the cycle continues until there are no more URLs to test. Each matching test that it
+finds it associates with the corresponding URL. By discovering URLs and pairing them up with tests SpiderTest could be
+said to be automating test generation. The test results for each URL tested are encapsulated within a test suite result
+set.
 
 SpiderTest reporters are event driven - or at least event driven in the way SAX parsers are event driven (I'm not saying
 that reporters are SAX parsers btw just that they operate in the same way). When all the tests have been executed the
@@ -38,15 +42,15 @@ Each visited URL that has one or more associated tests defines a test suite. Wit
 there may be multiple topics and each topic may contain multiple individual tests.
 
 Each reporter implements an interface defined within __Reporter.js__ (this is documented below and in the code). The
-reporter callback methods are invoked as the tests are iterated providing the necessary information to generated test
+reporter callback methods are invoked as the tests are iterated providing the necessary information to generate test
 reports in a variety of formats at different levels of detail as required.
 
 
 TODO
 ----
 
-- Provide a means to add request headers to be specified for tests
 - Expose more options
+- Allow tests to be selected based on response header values
 - Better support JSON and XML responses (e.g. like finding URLs in these docs and using them)
 - Maybe support other kinds of HTTP request (other than GET)
 
@@ -91,9 +95,49 @@ The __urlPattern__ attribute specifies a regular expression to use to match URLs
 URL has the associated tests run against its response. A single URL may be matched multiple times
 in which case all associated tests are run.
 
+### Request Headers ###
+
+Test definitions can include request headers to use when performing requests of matching URLs. Request headers
+are specified with with a __requestHeaders__ attribute. For example:
+
+    "Common HTTP Tests With Headers" : {
+        urlPattern: "/",
+        requestHeaders: {
+            "accept-language": "ja-jp",
+            "user-agent": "Android"
+        },
+        tests: {
+            "The accept-language request header should be ja-jp": {
+                assert: function (spiderPayload) {
+                    should.equal("ja-jp", spiderPayload.response.request.headers["accept-language"]);
+                }
+            },
+            "The user-agent request header should be Android": {
+                assert: function (spiderPayload) {
+                    should.equal("Android", spiderPayload.response.request.headers["user-agent"]);
+                }
+            }
+        }
+    }
+
+Tests are only executed if the associated request used the specified set of headers. If no headers are specified then
+a default set is used. The default request headers and their values are as follows:
+
+- 'accept': "application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,image/jpg,*/*;q=0.5",
+- 'accept-language': 'en-US,en;q=0.8',
+- 'accept-charset':  'ISO-8859-1,utf-8;q=0.7,*;q=0.3',
+- 'user-agent': 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_4; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7'
+- 'referer': current url
+
+The following headers are ignored when matching requests with their corresponding headers:
+
+- content-length
+- cookie
+- referer
+
 ### Spider Payload ###
 
-The Spider Payload is the object that is provided to each test assert function upon execution. It contains lots
+The Spider Payload an the object that is provided to each test assert function upon execution. It contains lots
 of data concerning the response of the associated HTTP request. A sample payload is provided in the examples folder
 as a full description is beyond the scope of this README. However, some of the more obviously useful properties
 are listed below:
@@ -134,6 +178,25 @@ Provide the HTTP response status code.
     spiderPayload.response.body
 
 Provide the entire response document as a string.
+
+### $ ###
+
+Along with the spider payload, $ is also provided to each test assert function. $ is a subset of JQuery that allows
+JQuery commands to be executed against the response. E.g.:
+
+    "Index tests" : {
+        urlPattern: "testIndex.html",
+        tests: {
+            "The first css reference should be a link to testCss/some.css": {
+                assert: function (spiderPayload, $) {
+                    var link = $("head").find("link")[0];
+                    var linkHref = link.attribs.href;
+                    linkHref.should.equal("testCss/some.css");
+                }
+            }
+        }
+    }
+
 
 Installation
 ------------

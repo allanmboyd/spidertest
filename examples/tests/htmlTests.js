@@ -9,6 +9,35 @@ exports.topics = {
                 assert: function(spiderPayload) {
                     should.equal(spiderPayload.response.statusCode, 200)
                 }
+            },
+            "The accept-language request header should not be ja-jp": {
+                assert: function (spiderPayload) {
+                    spiderPayload.response.request.headers["accept-language"].should.not.equal('ja-jp');
+                }
+            },
+            "The user-agent request header should not be Android": {
+                assert: function (spiderPayload) {
+                    spiderPayload.response.request.headers["user-agent"].should.not.equal('Android');
+                }
+            }
+        }
+    },
+    "Common HTTP Tests With Headers" : {
+        urlPattern: "/",
+        requestHeaders: {
+            "accept-language": "ja-jp",
+            "user-agent": "Android"
+        },
+        tests: {
+            "The accept-language request header should be ja-jp": {
+                assert: function (spiderPayload) {
+                    should.equal("ja-jp", spiderPayload.response.request.headers["accept-language"]);
+                }
+            },
+            "The user-agent request header should be Android": {
+                assert: function (spiderPayload) {
+                    should.equal("Android", spiderPayload.response.request.headers["user-agent"]);
+                }
             }
         }
     },
