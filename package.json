@@ -7,7 +7,7 @@
     "bugs": {
         "url" : "http://github.com/allanmboyd/spidertest/issues"
     },
-    "main": "lib/spidertest.js",
+    "main": "lib/spiderTest.js",
     "preferGlobal": "true",
     "directories": {
         "lib": "./lib",
