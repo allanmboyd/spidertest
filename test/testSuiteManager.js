@@ -70,6 +70,43 @@ exports.testRunSuiteTest = function (test) {
     suites.Suite1.getErrorCount().should.equal(0);
 
     // todo add more tests in particular for multiple suites, tests and topics
-    
+
     test.done();
+};
+
+exports.testRunSuiteTestsBadTests = function (test) {
+
+    var testDetails = {
+        testName: "Test1",
+        topicName: "Topic1",
+        suiteName: "Suite1",
+        test: {
+            hello: null
+        }
+    };
+    try {
+        suiteManager.runSuiteTest(testDetails);
+        should.fail("Expected an error because there is no assert attribute in the test");
+    } catch (e) {
+        // Success
+    }
+
+
+    testDetails = {
+        testName: "Test1",
+        topicName: "Topic1",
+        suiteName: "Suite1",
+        test: {
+            assert: 'hello'
+        }
+    };
+    try {
+        suiteManager.runSuiteTest(testDetails);
+        should.fail("Expected an error because the assert value is not a function");
+    } catch (e) {
+        // Success
+    }
+
+    test.done();
+
 };
