@@ -183,8 +183,9 @@ Provide the entire response document as a string.
 
 ### $ ###
 
-Along with the spider payload, $ is also provided to each test assert function. $ is a subset of JQuery that allows
-JQuery commands to be executed against the response. E.g.:
+Along with the spider payload, $ is also provided to each test assert function. $ is a subset of JQuery (i.e
+[cheerio](https://github.com/MatthewMueller/cheerio "cheerio")that allows JQuery commands to be executed against the
+response. E.g.:
 
     "Index tests" : {
         urlPattern: "testIndex.html",
