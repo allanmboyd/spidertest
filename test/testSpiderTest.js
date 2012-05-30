@@ -398,6 +398,78 @@ exports.testRunTestsWithMixins = function (test) {
         }, null, reporter);
 };
 
+
+exports.testRunTestsWithPathSubstitutions = function (test) {
+    var server = startServer();
+    var serverPort = server.address().port;
+
+    var reporter = new Reporter();
+    var suitesStartCount = 0;
+    var suiteStartCount = 0;
+    var topicStartCount = 0;
+    var testStartCount = 0;
+    var successCount = 0;
+    var failedCount = 0;
+    var errorCount = 0;
+    var testEndCount = 0;
+    var topicEndCount = 0;
+    var suiteEndCount = 0;
+    var suitesEndCount = 0;
+    reporter.suitesStart = function() {
+        suitesStartCount += 1;
+    };
+    reporter.suiteStart = function(suiteName, suiteDescription, testCount, successCount, failedCount, errorCount, suiteTime) {
+        suiteStartCount += 1;
+    };
+    reporter.topicStart = function(topicName) {
+        topicStartCount += 1;
+    };
+    reporter.testStart = function(testName) {
+        testName.should.equal("The parent folder should be testFolder");
+        testStartCount += 1;
+    };
+    reporter.testSuccess = function() {
+        successCount += 1;
+    };
+    reporter.testFailure = function() {
+        failedCount += 1;
+    };
+    reporter.testError = function() {
+        errorCount += 1;
+    };
+    reporter.testEnd = function() {
+        testEndCount += 1;
+    };
+    reporter.topicEnd = function() {
+        topicEndCount += 1;
+    };
+    reporter.suiteEnd = function() {
+        suiteEndCount += 1;
+    };
+    reporter.suitesEnd = function() {
+        suitesEndCount += 1;
+    };
+
+    spiderTest.runTests("http://localhost:" + serverPort + "/testIndex.html",
+        process.cwd() + "/" + "test/resources/pathVariablesTests", function() {
+            server.close();
+
+            should.equal(suitesStartCount, 1, "there should be only 1 suitesStart call");
+            should.equal(suiteStartCount, 1, "there should be 1 suiteStart calls");
+            should.equal(topicStartCount, 1, "there should be 1 topicStart calls");
+            should.equal(testStartCount, 1, "there should be 1 testStart calls");
+            should.equal(successCount, 1, "there should be 1 successes");
+            should.equal(failedCount, 0, "there should be 0 failures");
+            should.equal(errorCount, 0, "there should be no errors");
+            should.equal(testEndCount, 1, "there should be 1 testEnd calls");
+            should.equal(topicEndCount, 1, "there should be 1 topicEnd calls");
+            should.equal(suiteEndCount, 1, "there should be 1 suiteEnd calls");
+            should.equal(suitesEndCount, 1, "there should be 1 suitesEnd call");
+
+            test.done();
+        }, null, reporter);
+};
+
 function startServer() {
 
     var server = express.createServer();

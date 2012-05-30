@@ -49,6 +49,8 @@ reports in a variety of formats at different levels of detail as required.
 TODO
 ----
 
+- Support multiple start urls
+- Allow spidering to be restricted from test definitions
 - Expose more options
 - Allow tests to be selected based on response header values
 - Better support JSON and XML responses (e.g. like finding URLs in these docs and using them)
@@ -196,6 +198,52 @@ JQuery commands to be executed against the response. E.g.:
             }
         }
     }
+
+### Path Variables ###
+
+Sometimes it is useful to specify path variables in the _urlPattern_ associated with a topic and to subsequently
+have access to the values of these path variables within a test. _Path Variables_ provide this feature and enable
+path variable values to be included within test names and incorporated within test assertions.
+
+Path variables are specified by prefixing a path segment in the _urlPattern_ with a ':'. Path variables can only be
+associated with a complete path segment. Path variables cannot include a path separator (i.e. '/') and can only be
+associated with a single path segment - though multiple path variables can be used in the _urlPattern_. Any path
+separators that are present before or after the path variable in the real URL must also be included in the _urlPattern_
+in order to match the real URL.
+
+Here is a contrived example:
+
+    var should = require("should");
+
+    exports.topics = {
+        "Tests with URL path substitutions": {
+            urlPattern: "/:parentFolder/yetAnotherPage.html",
+            tests: {
+                "The parent folder should be :parentFolder": {
+                    assert: function(spiderPayload, $, pathVariables) {
+                        should.equal('testFolder', pathVariables.parentFolder);
+                    }
+                }
+            }
+        }
+    };
+
+The above example while not completely realistic does illustrate the use of a single path variable. The path variable
+is named _parentFolder_ and is declared in the _urlPattern_. The test will run against all URLs that match the
+pattern '/.*/yetAnotherPage.html'. Note that the initial '/' is significant. Without it then the test will still run
+but the parentFolder variable will not be assigned a value because the real URL path starts with a '/' and path
+variables cannot traverse path separators.
+
+Path variables can be included within test names. In this case when the test name is passed to the reporter its
+variables are replaced by their corresponding values.
+
+Path variables are passed into test assert functions as the third parameter after $. The _pathVariables_ object
+contains the names and associated values for all path variables. Path variable names within the _pathVariables_ object
+have the same name as their declaration without the ':' prefix.
+
+In the above example the path variable declared as :parentFolder is referenced using 'pathVariables.parentFolder'
+from within the test assert function.
+
 
 ### Mixins ###
 
