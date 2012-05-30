@@ -49,13 +49,23 @@ reports in a variety of formats at different levels of detail as required.
 TODO
 ----
 
+- Allow multiple sets of request headers to be specifed for a given topic,
+- Try to include the URL from which a failing test is called from - referer maybe?
 - Support multiple start urls
+- Allow path variables in topic names
 - Allow spidering to be restricted from test definitions
 - Expose more options
+- Allow request parameters to be specified in test definitions
+- Include the cookies header when matching requests to tests and a cookie is specified in the test definition
 - Allow tests to be selected based on response header values
 - Better support JSON and XML responses (e.g. like finding URLs in these docs and using them)
 - Maybe support other kinds of HTTP request (other than GET)
-
+- Fix cross domain spidering - currently it isn't possible because the host routes are always based on start url
+- Describe how to use the API in this README
+- Update ConsoleReporter to allow an option to be specified to only display failing tests
+- Probably should make request header specifications case insensitive
+- Cookies specified in requestHeaders tests are not executed
+- Cookies are re-used by spider across different requests - this might be fine sometimes but not necessarily always
 
 Test Definition
 ---------------
@@ -184,7 +194,7 @@ Provide the entire response document as a string.
 ### $ ###
 
 Along with the spider payload, $ is also provided to each test assert function. $ is a subset of JQuery (i.e
-[cheerio](https://github.com/MatthewMueller/cheerio "cheerio")that allows JQuery commands to be executed against the
+[cheerio](https://github.com/MatthewMueller/cheerio "cheerio") that allows JQuery commands to be executed against the
 response. E.g.:
 
     "Index tests" : {
