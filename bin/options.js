@@ -23,6 +23,11 @@ exports.options = {
             "JSON object it is converted into a JSON object before being passed to the reporters. It is up to the " +
             "reporter to determine what to do with it."
     },
+    "retainCookies": {
+        "default": "true",
+        "describe": "Retain cookies for future requests i.e. cookies returned by a response will be resent on the " +
+            "request to subsequent spidered URLs."
+    },
     "spiderCrossDomain": {
         "default": "false",
         "describe": "Allow spidering to continue across different domains"

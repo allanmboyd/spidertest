@@ -56,7 +56,6 @@ TODO
 - Allow spidering to be restricted from test definitions
 - Expose more options
 - Allow request parameters to be specified in test definitions
-- Include the cookies header when matching requests to tests and a cookie is specified in the test definition
 - Allow tests to be selected based on response header values
 - Better support JSON and XML responses (e.g. like finding URLs in these docs and using them)
 - Maybe support other kinds of HTTP request (other than GET)
@@ -64,6 +63,7 @@ TODO
 - Describe how to use the API in this README
 - Update ConsoleReporter to allow an option to be specified to only display failing tests
 - Probably should make request header specifications case insensitive
+- Include the cookies header when matching requests to tests and a cookie is specified in the test definition
 - Cookies specified in requestHeaders tests are not executed
 - Cookies are re-used by spider across different requests - this might be fine sometimes but not necessarily always
 

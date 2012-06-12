@@ -48,6 +48,18 @@ exports.testHeadersEqual = function(test) {
     utils.headersEqual(h1, h2).should.equal(false);
     utils.headersEqual(h2, h1).should.equal(false);
 
+    h1 = {
+        referer: 'http://localhost:54054/testImages/original.jpg'
+    };
+
+    h2 = {
+        referer: 'http://localhost:54054/testImages/original.jpg',
+        'content-length': 0
+    };
+
+    utils.headersEqual(h1, h2).should.equal(true);
+    utils.headersEqual(h2, h1).should.equal(true);
+
     test.done();
 };
 
@@ -152,6 +164,24 @@ exports.testReplacePlaceholdersInString = function(test) {
     replaced = utils.replacePlaceholdersInString("URL /images/:two/img.png", vals);
     replaced.should.equal("URL /images/2/img.png");
 
+
+    test.done();
+};
+
+exports.testObjectKeysToLowerCase = function(test) {
+
+    var headers = {
+        'Accept-Charset': 'UTF-8',
+        'User-Agent': 'Test'
+    };
+
+    headers = utils.objectKeysToLowerCase(headers);
+    should.not.exist(headers['Accept-Charset']);
+    should.exist(headers['accept-charset']);
+    should.not.exist(headers['User-Agent']);
+    should.exist(headers['user-agent']);
+    headers['accept-charset'].should.equal('UTF-8');
+    headers['user-agent'].should.equal('Test');
 
     test.done();
 };
