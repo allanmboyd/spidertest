@@ -28,7 +28,7 @@ server.configure(function() {
                 res.cookie(cookie, req.cookies[cookie]);
             }
         }
-        if(!res.header['set-cookie']) {
+        if (!res.header['set-cookie']) {
             res.cookie('servercookie', 'hello');
         }
         next();
@@ -48,10 +48,9 @@ module.exports = {
         server.close();
         callback();
     },
-    testRetainCookies: function (test) {
-        var spider;
+    testServerCookiesRetained: function (test) {
         var serverCookie = "servercookie=hello";
-        var cookieOnAllRequests = function (payload, $) {
+        var cookieOnAllRequests = function (payload) {
             var requestHeaders = payload.response.request.headers;
             var responseHeaders = payload.response.headers;
             should.exist(requestHeaders);
@@ -65,99 +64,131 @@ module.exports = {
                 responseHeaders['set-cookie'][0].should.equal(serverCookie, "Expected to see the default cookie in the response");
             }
         };
-        var requestHeaderProvider = function(url) {
-            return [
-                {
-                    cookie: serverCookie
-                }
-            ];
-        };
-        var testDefault = function(next) {
-            spider = spiderModule({
-                throwOnMissingRoute: true,
-                autoSpider: spiderOptions.AUTO.ANCHORS
-            });
-            runSpiderTests(spider, "/testIndex.html", cookieOnAllRequests, 3, next);
-        };
 
-        var testRetainTrue = function(next) {
-            spider = spiderModule({
+        function runTest(next) {
+            var spider = spiderModule({
                 throwOnMissingRoute: true,
                 autoSpider: spiderOptions.AUTO.ANCHORS,
                 retainCookies: true
             });
             runSpiderTests(spider, "/testIndex.html", cookieOnAllRequests, 3, next);
-        };
+        }
 
-        var testRetainFalse = function(next) {
-            spider = spiderModule({
-                throwOnMissingRoute: true,
-                autoSpider: spiderOptions.AUTO.ANCHORS,
-                retainCookies: false
-            });
-            runSpiderTests(spider, "/testIndex.html", cookieOnAllRequests, 3, next);
-        };
-
-        var cookieOnInitialRequest = function (payload, $) {
-            console.log("testing cookieOnInitialRequest");
+        async.series([
+            runTest,
+            runTest // run twice to test for idempotency
+        ], test.done);
+    },
+    testServerCookiesNotRetained: function (test) {
+        var noCookies = function(payload) {
             var requestHeaders = payload.response.request.headers;
+            var responseHeaders = payload.response.headers;
             should.exist(requestHeaders);
+            should.exist(responseHeaders);
+            should.not.exist(requestHeaders.cookie);
+            should.exist(responseHeaders['set-cookie']);
+        };
+
+        var spider = spiderModule({
+            throwOnMissingRoute: true,
+            autoSpider: spiderOptions.AUTO.ANCHORS,
+            retainCookies: false
+        });
+        runSpiderTests(spider, "/testIndex.html", noCookies, 3, test.done);
+    },
+    testServerCookiesRetainedWithRequestCookies: function (test) {
+        var serverCookie = "servercookie=hello";
+        var clientCookie = "clientcookie=hello";
+
+        var verifyCookies = function (payload, $) {
+            var requestHeaders = payload.response.request.headers;
+            var responseHeaders = payload.response.headers;
+            should.exist(requestHeaders);
+            var requestCookies = requestHeaders.cookie;
+            should.exist(requestCookies);
+            should.exist(responseHeaders);
+            var responseCookies = responseHeaders['set-cookie'];
+            should.exist(responseCookies);
+            responseCookies.should.include(serverCookie, "The response should always include the server cookie");
             if (payload.url.path.indexOf("testIndex.html") !== -1) {
-                console.log(payload.response.headers);
-                should.exist(requestHeaders.cookie);
-                serverCookie.should.equal(requestHeaders.cookie);
+                requestCookies.should.not.include(serverCookie, "There should be no server cookie because we have " +
+                    "yet to make a request");
+                responseCookies.should.include(clientCookie, "Expected client cookie here because the header " +
+                    "provider sets it");
             } else {
-                should.not.exist(requestHeaders.cookie);
+                requestCookies.should.include(serverCookie, "Expected the server cookie from the response to be " +
+                    "retained in the request");
+                responseCookies.should.include(clientCookie, "Expected the client cookie to be here because it " +
+                    "should be retained from the server response");
             }
         };
 
-        var testIndexHeaders = function(url) {
-            console.log("headerprovider: " + url);
+        var indexHeaderProvider = function(url) {
             var headers = [];
             if (url && url.indexOf("testIndex.html") !== -1) {
                 headers = [
                     {
-                        cookie: serverCookie
+                        cookie: clientCookie
                     }
                 ];
             }
             return headers;
         };
 
+        var spider = spiderModule({
+            throwOnMissingRoute: true,
+            autoSpider: spiderOptions.AUTO.ANCHORS,
+            retainCookies: true
+        });
+        runSpiderTests(spider, "/testIndex.html", verifyCookies, 3, test.done, indexHeaderProvider);
 
-        var testDefaultCookiesOnTestIndex = function(next) {
-            spider = spiderModule({
-                throwOnMissingRoute: true,
-                autoSpider: spiderOptions.AUTO.ANCHORS
-            });
-            runSpiderTests(spider, "/testIndex.html", cookieOnInitialRequest, 3, next, testIndexHeaders);
+    },
+    testServerCookiesNotRetainedWithRequestCookies: function (test) {
+        var serverCookie = "servercookie=hello";
+        var clientCookie = "clientcookie=hello";
+
+        var verifyCookies = function (payload, $) {
+            var requestHeaders = payload.response.request.headers;
+            var responseHeaders = payload.response.headers;
+            should.exist(requestHeaders);
+            var requestCookies = requestHeaders.cookie;
+            should.exist(responseHeaders);
+            var responseCookies = responseHeaders['set-cookie'];
+            should.exist(responseCookies);
+            responseCookies.should.include(serverCookie, "The response should always include the server cookie");
+            if (payload.url.path.indexOf("testIndex.html") !== -1) {
+                should.exist(requestCookies);
+                requestCookies.should.include(clientCookie, "Expected client cookie in the request because the header " +
+                    "provider sets it");
+                responseCookies.should.include(clientCookie, "Expected client cookie in the response because the header " +
+                    "provider sets it");
+                requestCookies.should.not.include(serverCookie, "The request should never include the server cookie " +
+                    "because no cookies are retained");
+            } else {
+                should.not.exist(requestCookies);
+                responseCookies.should.not.include(clientCookie, "There should be no client cookie here because" +
+                    " it is not set by the header provider for this request and is not retained");
+            }
         };
 
-        var testRetainTrueCookiesOnTestIndex = function(next) {
-            spider = spiderModule({
-                throwOnMissingRoute: true,
-                autoSpider: spiderOptions.AUTO.ANCHORS,
-                retainCookies: true
-            });
-            runSpiderTests(spider, "/testIndex.html", cookieOnInitialRequest, 3, next, testIndexHeaders);
+        var indexHeaderProvider = function(url) {
+            var headers = [];
+            if (url && url.indexOf("testIndex.html") !== -1) {
+                headers = [
+                    {
+                        cookie: clientCookie
+                    }
+                ];
+            }
+            return headers;
         };
 
-        var testRetainFalseCookiesOnTestIndex = function(next) {
-            spider = spiderModule({
-                throwOnMissingRoute: true,
-                autoSpider: spiderOptions.AUTO.ANCHORS,
-                retainCookies: false
-            });
-            runSpiderTests(spider, "/testIndex.html", cookieOnInitialRequest, 3, next, testIndexHeaders);
-        };
-
-        async.series([
-            testDefault,
-            testDefault
-//            testRetainTrue
-//            testRetainFalse
-//            testDefaultCookiesOnTestIndex
-        ], test.done);
+        var spider = spiderModule({
+            throwOnMissingRoute: true,
+            autoSpider: spiderOptions.AUTO.ANCHORS,
+            retainCookies: false
+        });
+        runSpiderTests(spider, "/testIndex.html", verifyCookies, 3, test.done, indexHeaderProvider);
     },
     testHTMLManualSpider: function (test) {
         var spider = manualSpider;
