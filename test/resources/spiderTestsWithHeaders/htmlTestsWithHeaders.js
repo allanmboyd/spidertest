@@ -62,5 +62,35 @@ exports.topics = {
                 }
             }
         }
+    },
+    "Specific cookie based test number 1: hello" : {
+        urlPattern: "testIndex.html",
+        requestHeaders: {
+            "myCustomHeader": 'hello',
+            "cookie": "greeting=hello"
+        },
+        tests: {
+            "The request greeting cookie should be set to 'hello'": {
+                assert: function (spiderPayload) {
+                    var cookieHeader = spiderPayload.response.request.headers["cookie"];
+                    should.equal("greeting=hello", cookieHeader);
+                }
+            }    
+        }
+    },
+    "Specific cookie based test number 2: ohaiyo" : {
+        urlPattern: "testIndex.html",
+        requestHeaders: {
+            "myCustomHeader": 'ohaiyo',
+            "cookie": "greeting=ohaiyo"
+        },
+        tests: {
+            "The request greeting cookie should be set to 'ohaiyo'": {
+                assert: function (spiderPayload) {
+                    var cookieHeader = spiderPayload.response.request.headers["cookie"];
+                    should.equal("greeting=ohaiyo", cookieHeader);
+                }
+            }
+        }
     }
 };

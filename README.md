@@ -62,7 +62,6 @@ TODO
 - Fix cross domain spidering - currently it isn't possible because the host routes are always based on start url
 - Describe how to use the API in this README
 - Update ConsoleReporter to allow an option to be specified to only display failing tests
-- Include the cookies header when matching requests to tests and a cookie is specified in the test definition
 
 Installation
 ------------
@@ -115,6 +114,9 @@ Options:
                         object it is converted into a JSON object before being
                         passed to the reporters. It is up to the reporter to
                         determine what to do with it.
+  --retainCookies       Retain cookies for future requests i.e. cookies
+                        returned by a response will be resent on the request
+                        to subsequent spidered URLs.          [default: "true"]
   --spiderCrossDomain   Allow spidering to continue across different domains
                                                              [default: "false"]
   --spiderStartUrl      The full http url from which to start spidering.
@@ -198,7 +200,8 @@ a default set is used. The default request headers and their values are as follo
 - 'user-agent': 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_4; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7'
 - 'referer': current url
 
-The following headers are ignored when matching requests with their corresponding headers:
+The following headers are ignored when matching requests with their corresponding headers (i.e. when deciding which
+test topics should be selected for a given request):
 
 - content-length
 - cookie
@@ -375,6 +378,58 @@ syntax is with an example:
             }
         }
     };
+
+HowTo
+-----
+
+### Have topic tests executed based on the value of a provided cookie? ###
+
+The topic selection process ignores the _cookie_ request header (_content-length_ and _referer_ are also
+ignored). This means that setting a cookie header won't affect whether or not the topic tests are executed. The reason
+is primarily because the server might be setting cookies and the _retainCookies_ option may be enabled
+(it is by default) and this makes including cookie headers in test selection I think unnecessarily complicated given
+that there is a simple workaround:
+
+Adding any custom header along with the cookie header will ensure that the associated
+tests are only executed when that custom header is in the request and since the cookie header is also there the same
+effect is achieved. Here is an example:
+
+    exports.topics = {
+        "Specific cookie based test number 1: hello" : {
+            urlPattern: "testIndex.html",
+            requestHeaders: {
+                "myCustomHeader": 'hello',
+                "cookie": "greeting=hello"
+            },
+            tests: {
+                "The request greeting cookie should be set to 'hello'": {
+                    assert: function (spiderPayload) {
+                        var cookieHeader = spiderPayload.response.request.headers["cookie"];
+                        should.equal("greeting=hello", cookieHeader);
+                    }
+                }
+            }
+        },
+        "Specific cookie based test number 2: ohaiyo" : {
+            urlPattern: "testIndex.html",
+            requestHeaders: {
+                "myCustomHeader": 'ohaiyo',
+                "cookie": "greeting=ohaiyo"
+            },
+            tests: {
+                "The request greeting cookie should be set to 'ohaiyo'": {
+                    assert: function (spiderPayload) {
+                        var cookieHeader = spiderPayload.response.request.headers["cookie"];
+                        should.equal("greeting=ohaiyo", cookieHeader);
+                    }
+                }
+            }
+        }
+    }
+
+In future there may be an enhancement that allows test selection to be specifically controlled from within the
+test definition itself rather than rely on request headers as in the above example. Until then use of custom
+request headers is a possibly alternative.
 
 Reporters
 ---------
