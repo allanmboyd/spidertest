@@ -49,6 +49,7 @@ reports in a variety of formats at different levels of detail as required.
 TODO
 ----
 
+- Multiple start urls can result in overlapping tests and when this happens duplicate tests are run and stored. Fix.
 - Allow multiple sets of request headers to be specifed for a given topic,
 - Try to include the URL from which a failing test is called from - referer maybe?
 - Allow path variables in topic names
