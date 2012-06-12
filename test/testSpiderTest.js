@@ -315,11 +315,11 @@ exports.testRunTestsWithHeaders = function (test) {
             should.equal(suitesStartCount, 1, "there should be only 1 suitesStart call");
             should.equal(suiteStartCount, 3, "there should be 3 suiteStart calls");
             should.equal(topicStartCount, 5, "there should be 5 topicStart calls");
-            should.equal(testStartCount, 15, "there should be 15 testStart calls");
-            should.equal(successCount, 15, "there should be 15 successes");
+            should.equal(testStartCount, 16, "there should be 15 testStart calls");
+            should.equal(successCount, 16, "there should be 15 successes");
             should.equal(failedCount, 0, "there should be 0 failures");
             should.equal(errorCount, 0, "there should be no errors");
-            should.equal(testEndCount, 15, "there should be 15 testEnd calls");
+            should.equal(testEndCount, 16, "there should be 15 testEnd calls");
             should.equal(topicEndCount, 5, "there should be 5 topicEnd calls");
             should.equal(suiteEndCount, 3, "there should be 3 suiteEnd calls");
             should.equal(suitesEndCount, 1, "there should be 1 suitesEnd call");

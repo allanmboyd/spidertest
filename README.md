@@ -62,10 +62,67 @@ TODO
 - Fix cross domain spidering - currently it isn't possible because the host routes are always based on start url
 - Describe how to use the API in this README
 - Update ConsoleReporter to allow an option to be specified to only display failing tests
-- Probably should make request header specifications case insensitive
 - Include the cookies header when matching requests to tests and a cookie is specified in the test definition
-- Cookies specified in requestHeaders tests are not executed
-- Cookies are re-used by spider across different requests - this might be fine sometimes but not necessarily always
+
+Installation
+------------
+
+    npm install spidertest
+
+By default spidertest installs globally.
+
+
+Usage
+-----
+
+Some examples:
+
+1. Spider test a website using default options and the tests defined in the examples/tests folder:
+
+    spidertest --testDir=/Users/aboyd/github/spiderTest/examples/tests --spiderStartUrl=http://subways.millionyearsold.com
+
+2. Same as above but this time specify a the JUnitReporter
+
+    spidertest --testDir=/Users/aboyd/github/spiderTest/examples/tests --spiderStartUrl=http://subways.millionyearsold.com --reporters=/Users/aboyd/github/spidertest/lib/reporters/JUnitReporter
+
+3. Same as above but this time specify both a ConsoleReporter and a MultiFileJUnitReporter and have the JUnit test
+report files placed into /tmp:
+
+    spidertest --testDir=/Users/aboyd/github/spiderTest/examples/tests --spiderStartUrl=http://subways.millionyearsold.com --reporters=/Users/aboyd/github/spidertest/lib/reporters/MultiFileJUnitReporter,/Users/aboyd/github/spidertest/lib/reporters/ConsoleReporter --reporterOptions='{"outputDir":"/tmp"}'
+
+Output of spidertest --help:
+
+<pre><code>
+Usage: spiderTest [configOption] (see spiderTest -h for more detail)
+
+Options:
+  --config              Path to a json configuration file defining custom
+                        options. All command line options - except this one
+                        and --help - will be used if present. Options
+                        specified directly on the command line override file
+                        loaded options.
+  --failOnMissingRoute  Set to true if spidering should stop when a route to
+                        an encountered link is not available
+                                                             [default: "false"]
+  --failOnNoResponse    Set to true if spidering should stop when a HTTP
+                        request fails to get a response      [default: "false"]
+  --help, -h            This message.
+  --reporters           Comma separated list of paths to reporter.js Reporter
+                        implementations for reporting test results.
+                                  [default: "../lib/reporters/ConsoleReporter"]
+  --reporterOptions     String of options passed into the createReporter()
+                        Reporter function. If the given string is a JSON
+                        object it is converted into a JSON object before being
+                        passed to the reporters. It is up to the reporter to
+                        determine what to do with it.
+  --spiderCrossDomain   Allow spidering to continue across different domains
+                                                             [default: "false"]
+  --spiderStartUrl      The full http url from which to start spidering.
+  --testDir             Absolute path to folder containing javascript test
+                        definitions
+
+</pre></code>
+
 
 Test Definition
 ---------------
@@ -318,65 +375,6 @@ syntax is with an example:
             }
         }
     };
-
-Installation
-------------
-
-    npm install spidertest
-
-By default spidertest installs globally.
-
-
-Usage
------
-
-Some examples:
-
-1. Spider test a website using default options and the tests defined in the examples/tests folder:
-
-    spidertest --testDir=/Users/aboyd/github/spiderTest/examples/tests --spiderStartUrl=http://subways.millionyearsold.com
-
-2. Same as above but this time specify a the JUnitReporter
-
-    spidertest --testDir=/Users/aboyd/github/spiderTest/examples/tests --spiderStartUrl=http://subways.millionyearsold.com --reporters=/Users/aboyd/github/spidertest/lib/reporters/JUnitReporter
-
-3. Same as above but this time specify both a ConsoleReporter and a MultiFileJUnitReporter and have the JUnit test
-report files placed into /tmp:
-
-    spidertest --testDir=/Users/aboyd/github/spiderTest/examples/tests --spiderStartUrl=http://subways.millionyearsold.com --reporters=/Users/aboyd/github/spidertest/lib/reporters/MultiFileJUnitReporter,/Users/aboyd/github/spidertest/lib/reporters/ConsoleReporter --reporterOptions='{"outputDir":"/tmp"}'
-
-Output of spidertest --help:
-
-<pre><code>
-Usage: spiderTest [configOption] (see spiderTest -h for more detail)
-
-Options:
-  --config              Path to a json configuration file defining custom
-                        options. All command line options - except this one
-                        and --help - will be used if present. Options
-                        specified directly on the command line override file
-                        loaded options.
-  --failOnMissingRoute  Set to true if spidering should stop when a route to
-                        an encountered link is not available
-                                                             [default: "false"]
-  --failOnNoResponse    Set to true if spidering should stop when a HTTP
-                        request fails to get a response      [default: "false"]
-  --help, -h            This message.
-  --reporters           Comma separated list of paths to reporter.js Reporter
-                        implementations for reporting test results.
-                                  [default: "../lib/reporters/ConsoleReporter"]
-  --reporterOptions     String of options passed into the createReporter()
-                        Reporter function. If the given string is a JSON
-                        object it is converted into a JSON object before being
-                        passed to the reporters. It is up to the reporter to
-                        determine what to do with it.
-  --spiderCrossDomain   Allow spidering to continue across different domains
-                                                             [default: "false"]
-  --spiderStartUrl      The full http url from which to start spidering.
-  --testDir             Absolute path to folder containing javascript test
-                        definitions
-
-</pre></code>
 
 Reporters
 ---------

@@ -30,7 +30,8 @@ exports.topics = {
         urlPattern: "anotherPage.html",
         requestHeaders: {
             "accept-language": "ja-jp",
-            "user-agent": "Android"
+            "user-agent": "Android",
+            "cookie": "helloCookie=hello; byeCookie=bye"
         },
         tests: {
             "The accept-language request header should be ja-jp": {
@@ -41,6 +42,11 @@ exports.topics = {
             "The user-agent request header should be Android": {
                 assert: function (spiderPayload) {
                     should.equal("Android", spiderPayload.response.request.headers["user-agent"]);
+                }
+            },
+            "There should be a cookie header in the request with a value of 'helloCookie=hello; byeCookie=bye'": {
+                assert: function (spiderPayload) {
+                    should.equal("helloCookie=hello; byeCookie=bye", spiderPayload.response.request.headers["cookie"]);
                 }
             }
         }
