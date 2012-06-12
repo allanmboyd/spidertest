@@ -24,17 +24,19 @@ if (argv.config) {
 
 initializeConfigDefaults();
 
-var spiderStartUrl = config.get("spiderStartUrl");
 var testDir = config.get("testDir");
 
 var reporterOptions = cliHelper.objectify(config.get("reporterOptions"));
 var reporters = initialiseReporters(config.get("reporters"), reporterOptions);
 
-if (!spiderStartUrl || !testDir) {
+var spiderStart = config.get("spiderStart");
+if (!spiderStart || !testDir) {
     optimist.showHelp();
     process.exit(-1);
 } else {
-    spiderTest.runTests(spiderStartUrl, testDir, null, null, reporters, config);
+    spiderStart = spiderStart.split(',');
+    console.log(spiderStart);
+    spiderTest.runTests(spiderStart, testDir, null, null, reporters, config);
 }
 
 
@@ -80,3 +82,4 @@ function initializeConfigDefaults() {
 
     config.defaults(defaults);
 }
+

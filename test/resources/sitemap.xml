@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+    <url>
+        <loc>http://subways.millionyearsold.com</loc>
+    </url>
+    <url>
+        <loc>http://subways.millionyearsold.com/map/barcelona/</loc>
+        <image:image>
+            <image:loc>http://subways.millionyearsold.com/images/barcelona/barcelona-metro-map1-1169x826</image:loc>
+            <image:caption>Barcelona Metro Map</image:caption>
+            <image:geo_location>Barcelona, Spain</image:geo_location>
+            <image:title>Barcelona Metro Map for iPhone, Android and PC</image:title>
+        </image:image>
+    </url>
+    <url>
+        <loc>http://subways.millionyearsold.com/map/london/</loc>
+        <image:image>
+            <image:loc>http://subways.millionyearsold.com/images/london/tube-map1-1800x1196.gif</image:loc>
+            <image:caption>Tube Map</image:caption>
+            <image:geo_location>London, England</image:geo_location>
+            <image:title>London Underground Map for iPhone, Android and PC</image:title>
+        </image:image>
+    </url>
+    <url>
+        <loc>http://subways.millionyearsold.com/map/newyork/</loc>
+        <image:image>
+            <image:loc>http://subways.millionyearsold.com/images/newyork/ny-subway-2769x2490.gif</image:loc>
+            <image:caption>NYC Subway Map</image:caption>
+            <image:geo_location>New York, USA</image:geo_location>
+            <image:title>New York Subway Map for iPhone, Android and PC</image:title>
+        </image:image>
+    </url>
+    <url>
+        <loc>http://subways.millionyearsold.com/map/paris/</loc>
+        <image:image>
+            <image:loc>http://subways.millionyearsold.com/images/paris/paris-metro-1575x1575.gif</image:loc>
+            <image:caption>Paris Metro Map</image:caption>
+            <image:geo_location>Paris, France</image:geo_location>
+            <image:title>Paris Metro Map for iPhone, Android and PC</image:title>
+        </image:image>
+    </url>
+    <url>
+        <loc>http://subways.millionyearsold.com/map/tokyo/</loc>
+        <image:image>
+            <image:loc>http://subways.millionyearsold.com/images/tokyo/tokyo-subway-map1-2000x1430.gif</image:loc>
+            <image:caption>Tokyo Subway Map</image:caption>
+            <image:geo_location>Tokyo, Japan</image:geo_location>
+            <image:title>Tokyo Subway Map for iPhone, Android and PC</image:title>
+        </image:image>
+    </url>
+    <url>
+        <loc>http://subways.millionyearsold.com/tools.html</loc>
+    </url>
+    <url>
+        <loc>http://subways.millionyearsold.com/htmlToAppHelp.html</loc>
+    </url>
+    <url>
+        <loc>http://subways.millionyearsold.com/about.html</loc>
+    </url>
+</urlset>

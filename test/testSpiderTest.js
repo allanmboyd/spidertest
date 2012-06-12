@@ -6,8 +6,8 @@ var should = require("should");
 var spiderTestModule = loadModule("./lib/spiderTest.js");
 var spiderTest = require("../lib/spiderTest");
 
-exports.testResolveUrl = function (test) {
-    var url = spiderTestModule.resolveUrl("http://nodejs.org");
+exports.testResolveUrls = function (test) {
+    var url = spiderTestModule.resolveUrls(["http://nodejs.org"])[0];
     "http:".should.equal(url.protocol);
     "nodejs.org".should.equal(url.hostname);
     "80".should.equal(url.port);
@@ -15,7 +15,7 @@ exports.testResolveUrl = function (test) {
     "nodejs.org:80".should.equal(url.host);
     "http://nodejs.org:80/".should.equal(url.href);
 
-    url = spiderTestModule.resolveUrl("hello");
+    url = spiderTestModule.resolveUrls(["hello"])[0];
 
     "http:".should.equal(url.protocol);
     "localhost".should.equal(url.hostname);
@@ -24,12 +24,28 @@ exports.testResolveUrl = function (test) {
     "/hello".should.equal(url.path);
     "http://localhost:80/hello".should.equal(url.href);
 
-    url = spiderTestModule.resolveUrl("http://localhost:80/");
+    url = spiderTestModule.resolveUrls(["http://localhost:80/"])[0];
     "localhost".should.equal(url.hostname);
     "80".should.equal(url.port);
     "localhost:80".should.equal(url.host);
     "http://localhost:80/".should.equal(url.href);
 
+    var resolvedUrls = spiderTestModule.resolveUrls(["http://nodejs.org", "http://localhost:80/"]);
+    resolvedUrls.length.should.equal(2);
+    url = resolvedUrls[0];
+    "http:".should.equal(url.protocol);
+        "nodejs.org".should.equal(url.hostname);
+        "80".should.equal(url.port);
+        "/".should.equal(url.path);
+        "nodejs.org:80".should.equal(url.host);
+        "http://nodejs.org:80/".should.equal(url.href);
+
+    url = resolvedUrls[1];
+    "localhost".should.equal(url.hostname);
+    "80".should.equal(url.port);
+    "localhost:80".should.equal(url.host);
+    "http://localhost:80/".should.equal(url.href);
+    
     test.done();
 };
 
@@ -322,6 +338,82 @@ exports.testRunTestsWithHeaders = function (test) {
             should.equal(testEndCount, 18, "there should be 15 testEnd calls");
             should.equal(topicEndCount, 7, "there should be 5 topicEnd calls");
             should.equal(suiteEndCount, 3, "there should be 3 suiteEnd calls");
+            should.equal(suitesEndCount, 1, "there should be 1 suitesEnd call");
+
+            test.done();
+        }, null, reporter);
+};
+
+exports.testRunTestsWithMultipleStartUrls = function (test) {
+    var server = startServer();
+    var serverPort = server.address().port;
+
+    var reporter = new Reporter();
+    var suitesStartCount = 0;
+    var suiteStartCount = 0;
+    var topicStartCount = 0;
+    var testStartCount = 0;
+    var successCount = 0;
+    var failedCount = 0;
+    var errorCount = 0;
+    var testEndCount = 0;
+    var topicEndCount = 0;
+    var suiteEndCount = 0;
+    var suitesEndCount = 0;
+    reporter.suitesStart = function() {
+        suitesStartCount += 1;
+    };
+    reporter.suiteStart = function(suiteName, suiteDescription, testCount, successCount, failedCount, errorCount, suiteTime) {
+        suiteStartCount += 1;
+    };
+    reporter.topicStart = function(topicName) {
+        topicStartCount += 1;
+    };
+    reporter.testStart = function(testName) {
+        testStartCount += 1;
+    };
+    reporter.testSuccess = function() {
+        successCount += 1;
+    };
+    reporter.testFailure = function() {
+        failedCount += 1;
+    };
+    reporter.testError = function() {
+        errorCount += 1;
+    };
+    reporter.testEnd = function() {
+        testEndCount += 1;
+    };
+    reporter.topicEnd = function() {
+        topicEndCount += 1;
+    };
+    reporter.suiteEnd = function() {
+        suiteEndCount += 1;
+    };
+    reporter.suitesEnd = function() {
+        suitesEndCount += 1;
+    };
+
+    var startUrls = [
+        "http://localhost:" + serverPort + "/anotherPage.html",
+        "http://localhost:" + serverPort + "/testFolder/yetAnotherPage.html",
+        "http://localhost:" + serverPort + "/sitemap.xml"
+    ];
+
+    spiderTest.runTests(startUrls,
+        process.cwd() + "/" + "test/resources/spiderTestsWithMultiStartUrls", function() {
+            server.close();
+
+            should.equal(suitesStartCount, 1, "there should be only 1 suitesStart call");
+            should.equal(suiteStartCount, 4, "there should be 3 suiteStart calls");
+            should.equal(topicStartCount, 5, "there should be 5 topicStart calls");
+            should.equal(testStartCount, 20, "there should be 15 testStart calls");
+            should.equal(successCount, 20, "there should be 15 successes");
+            should.equal(failedCount, 0, "there should be 0 failures");
+            should.equal(errorCount, 0, "there should be no errors");
+            should.equal(testEndCount, 20, "there should be 15 testEnd calls");
+            should.equal(topicEndCount, 5, "there should be 5 topicEnd calls");
+            should.equal(suiteEndCount, 4, "there should be 3 suiteEnd calls");
             should.equal(suitesEndCount, 1, "there should be 1 suitesEnd call");
 
             test.done();

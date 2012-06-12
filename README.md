@@ -1,8 +1,8 @@
 SpiderTest
 ==========
 
-Test HTTP responses from URLs obtained by spidering, discovering URLs and selecting requests and tests based on
-URL patterns.
+Test HTTP responses from URLs obtained by requesting, discovering and spidering URLs and selecting requests and their
+response tests based on URL patterns and request headers.
 
 Overview
 --------
@@ -51,7 +51,6 @@ TODO
 
 - Allow multiple sets of request headers to be specifed for a given topic,
 - Try to include the URL from which a failing test is called from - referer maybe?
-- Support multiple start urls
 - Allow path variables in topic names
 - Allow spidering to be restricted from test definitions
 - Expose more options
@@ -78,16 +77,20 @@ Some examples:
 
 1. Spider test a website using default options and the tests defined in the examples/tests folder:
 
-    spidertest --testDir=/Users/aboyd/github/spiderTest/examples/tests --spiderStartUrl=http://subways.millionyearsold.com
+    spidertest --testDir=/Users/aboyd/github/spiderTest/examples/tests --spiderStart=http://subways.millionyearsold.com
 
-2. Same as above but this time specify a the JUnitReporter
+2. Same as above but this time specify a the JUnitReporter:
 
-    spidertest --testDir=/Users/aboyd/github/spiderTest/examples/tests --spiderStartUrl=http://subways.millionyearsold.com --reporters=/Users/aboyd/github/spidertest/lib/reporters/JUnitReporter
+    spidertest --testDir=/Users/aboyd/github/spiderTest/examples/tests --spiderStart=http://subways.millionyearsold.com --reporters=/Users/aboyd/github/spidertest/lib/reporters/JUnitReporter
 
 3. Same as above but this time specify both a ConsoleReporter and a MultiFileJUnitReporter and have the JUnit test
 report files placed into /tmp:
 
-    spidertest --testDir=/Users/aboyd/github/spiderTest/examples/tests --spiderStartUrl=http://subways.millionyearsold.com --reporters=/Users/aboyd/github/spidertest/lib/reporters/MultiFileJUnitReporter,/Users/aboyd/github/spidertest/lib/reporters/ConsoleReporter --reporterOptions='{"outputDir":"/tmp"}'
+    spidertest --testDir=/Users/aboyd/github/spiderTest/examples/tests --spiderStart=http://subways.millionyearsold.com --reporters=/Users/aboyd/github/spidertest/lib/reporters/MultiFileJUnitReporter,/Users/aboyd/github/spidertest/lib/reporters/ConsoleReporter --reporterOptions='{"outputDir":"/tmp"}'
+
+4. Multiple start urls (2 in this case):
+
+    spidertest --spiderStart=http://subways.millionyearsold.com/map/london/,http://subways.millionyearsold.com/map/tokyo/ --testDir=/Users/aboyd/github/spidertest/examples/tests/
 
 Output of spidertest --help:
 
@@ -119,7 +122,9 @@ Options:
                         to subsequent spidered URLs.          [default: "true"]
   --spiderCrossDomain   Allow spidering to continue across different domains
                                                              [default: "false"]
-  --spiderStartUrl      The full http url from which to start spidering.
+  --spiderStart         The full http url(s) from which to start spidering.
+                        This can be a single url or comma separated list of
+                        urls.
   --testDir             Absolute path to folder containing javascript test
                         definitions
 

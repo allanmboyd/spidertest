@@ -32,8 +32,9 @@ exports.options = {
         "default": "false",
         "describe": "Allow spidering to continue across different domains"
     },
-    "spiderStartUrl": {
-        "describe": "The full http url from which to start spidering."
+    "spiderStart": {
+        "describe": "The full http url(s) from which to start spidering. This can be a single url or comma separated" +
+            " list of urls."
     },
     "testDir" : {
         "describe": "Absolute path to folder containing javascript test definitions "
