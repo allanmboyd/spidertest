@@ -1,6 +1,6 @@
 {
   "name": "spidertest",
-  "version": "0.0.6",
+  "version": "0.0.8",
   "dependencies": {
     "cheerio": {
       "version": "0.7.0",
@@ -9,7 +9,7 @@
           "version": "0.1.1",
           "dependencies": {
             "htmlparser2": {
-              "version": "2.2.8"
+              "version": "2.2.9"
             }
           }
         },
@@ -55,7 +55,7 @@
       "version": "0.5.1",
       "dependencies": {
         "async": {
-          "version": "0.1.21"
+          "version": "0.1.22"
         },
         "ini": {
           "version": "1.0.2"
@@ -84,6 +84,9 @@
     },
     "xmldom": {
       "version": "0.1.2"
+    },
+    "async": {
+      "version": "0.1.22"
     },
     "should": {
       "version": "0.6.3"
