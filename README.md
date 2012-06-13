@@ -50,7 +50,6 @@ TODO
 ----
 
 - Consider implementing automated tests by deducing response expectations from requests
-- Multiple start urls can result in overlapping tests and when this happens duplicate tests are run and stored. Fix.
 - Allow multiple sets of request headers to be specifed for a given topic,
 - Try to include the URL from which a failing test is called from - referer maybe?
 - Allow path variables in topic names
@@ -478,14 +477,15 @@ the means to report on the test results.
 Each Reporter implementation should extend this Reporter class and override those methods that it needs to perform
 its required reporting function. There is no requirement to override every method.
 
+Here is an example of a custom reporter definition that does nothing except provide the empty Reporter functions.
 
-###Reporter.prototype.suitesStart = function ()###
+     var CustomReporter = function() {};
+     CustomReporter.prototype = Reporter.createReporter();
+     CustomReporter.prototype.constructor = CustomReporter;
+     exports.createReporter = function () {
+         return new CustomReporter();
+     }
 
-Invoked at the beginning of the reporting phase of SpiderTest. Indicates the start of the reporting phase.
-* * *
-
-
-###Reporter.prototype.suitesEnd = function(testCount, successCount, failedCount, errorCount, suitesTime)###
 
 The final method to be invoked during the reporting phase of SpiderTest. Indicates the end of the reporting phase.
 
@@ -500,8 +500,6 @@ the time that it takes to obtain responses from a web site - just the time for t
 responses.)
 * * *
 
-
-###Reporter.prototype.suiteStart = function(suiteName, suiteDescription, testCount, successCount, failedCount, errorCount, suiteTime)###
 
 Invoked when a new test suite is encountered.
 ####Parameters####
@@ -519,15 +517,6 @@ spidered responses within the suite.)
 * * *
 
 
-###Reporter.prototype.suiteEnd = function()###
-
-Invoked at the end of a testsuite. Merely indicates that a transition to the next suite is about to occur having
-invoked all the callbacks for all the tests within the current test suite.
-* * *
-
-
-###Reporter.prototype.topicStart = function(topicName, topicDescription, testCount, successCount, failedCount, errorCount, topicTime)###
-
 Invoked for each topic within a test suite. A topic allows several related tests to be grouped together.
 ####Parameters####
 
@@ -544,15 +533,6 @@ spidered responses within the topic.)
 * * *
 
 
-###Reporter.prototype.topicEnd = function()###
-
-Invoked at the end of a topic. Merely indicates that a transition to the next topic is about to occur having
-invoked all the callbacks for all the tests within the current topic.
-* * *
-
-
-###Reporter.prototype.testStart = function(testName, testTime, testFile)###
-
 Invoked for each test within a topic.
 ####Parameters####
 
@@ -563,15 +543,6 @@ spidered response.)
 * testFile *String* the name of the file containing the associated test definition from which the test was drawn
 * * *
 
-
-###Reporter.prototype.testEnd = function()###
-
-Invoked at the end of a test. Merely indicates that a transition to the next test is about to occur having
-invoked all the callbacks associated with the current test.
-* * *
-
-
-###Reporter.prototype.testSuccess = function(testName, testTime, testFile)###
 
 Invoked for each successful test.
 ####Parameters####
@@ -584,8 +555,6 @@ spidered response.)
 * * *
 
 
-###Reporter.prototype.testFailure = function(testName, error, testTime, testFile)###
-
 Invoked for each failed test.
 ####Parameters####
 
@@ -596,8 +565,6 @@ spidered response.)
 * testFile *String* the name of the file containing the associated test definition from which the test was drawn
 * * *
 
-
-###Reporter.prototype.testError = function(testName, error, testTime, testFile)###
 
 Invoked for test that resulted in an error (to be clear this refers to errors during
 test execution as defined within the tests definitions and not to errors encountered spidering URLs)
@@ -610,11 +577,6 @@ spidered response.)
 * testFile *String* the name of the file containing the associated test definition from which the test was drawn
 * * *
 
-
-createReporter
---------------
-
-###exports.createReporter = function (options)###
 
 Reporter implementations should implement this method to return a new instance of their Reporter.
 ####Parameters####
