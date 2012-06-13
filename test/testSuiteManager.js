@@ -1,8 +1,9 @@
+var reporterFactory = require('./testHelpers/reporterFactory');
 var loadModule = require("./testHelpers/moduleLoader.js").loadModule;
 var should = require("should");
 
 var suiteManagerModule = loadModule("./lib/suiteManager.js");
-var suiteManager = suiteManagerModule.module.exports;
+var SuiteManager = require('../lib/suiteManager.js'); //suiteManagerModule.module.exports;
 
 var Suite = suiteManagerModule.Suite;
 var ResultType = suiteManagerModule.ResultType;
@@ -44,32 +45,31 @@ exports.testRunSuiteTest = function (test) {
             assert: test1
         }
     };
+    var suiteManager = SuiteManager.createSuiteManager();
     suiteManager.runSuiteTest(testDetails);
-
-    var suites = suiteManagerModule.suites;
+    var reporter = reporterFactory.createSuiteStoreReporter();
+    suiteManager.generateReport(reporter);
+    
+    var suites = reporter.suites;
     should.exist(suites.Suite1);
-    var topic = suites.Suite1.getTopics().Topic1;
+    var topic = suites.Suite1.topics.Topic1;
     should.exist(topic);
-    var results = topic.getTestResults();
+    should.exist(topic.tests.Test1);
+    should.exist(topic.passed.Test1);
+    should.not.exist(topic.failed.Test1);
+    should.not.exist(topic.errors.Test1);
 
-    results.length.should.equal(1);
-    results[0].getName().should.equal("Test1");
-    results[0].getResult().should.equal(ResultType.PASS);
+    topic.name.should.equal("Topic1");
+    topic.testCount.should.equal(1);
+    topic.successCount.should.equal(1);
+    topic.failedCount.should.equal(0);
+    topic.errorCount.should.equal(0);
 
-    topic.getName().should.equal("Topic1");
-    topic.getTestCount().should.equal(1);
-    topic.getSuccessCount().should.equal(1);
-    topic.getFailedCount().should.equal(0);
-    topic.getErrorCount().should.equal(0);
-    topic.getResult().should.equal(ResultType.PASS);
-
-    suites.Suite1.getName().should.equal("Suite1");
-    suites.Suite1.getTestCount().should.equal(1);
-    suites.Suite1.getSuccessCount().should.equal(1);
-    suites.Suite1.getFailedCount().should.equal(0);
-    suites.Suite1.getErrorCount().should.equal(0);
-
-    // todo add more tests in particular for multiple suites, tests and topics
+    suites.Suite1.name.should.equal("Suite1");
+    suites.Suite1.testCount.should.equal(1);
+    suites.Suite1.successCount.should.equal(1);
+    suites.Suite1.failedCount.should.equal(0);
+    suites.Suite1.errorCount.should.equal(0);
 
     test.done();
 };
@@ -84,6 +84,8 @@ exports.testRunSuiteTestsBadTests = function (test) {
             hello: null
         }
     };
+
+    var suiteManager = SuiteManager.createSuiteManager();
     try {
         suiteManager.runSuiteTest(testDetails);
         should.fail("Expected an error because there is no assert attribute in the test");
@@ -100,6 +102,7 @@ exports.testRunSuiteTestsBadTests = function (test) {
             assert: 'hello'
         }
     };
+    suiteManager = SuiteManager.createSuiteManager();
     try {
         suiteManager.runSuiteTest(testDetails);
         should.fail("Expected an error because the assert value is not a function");
@@ -108,5 +111,48 @@ exports.testRunSuiteTestsBadTests = function (test) {
     }
 
     test.done();
+};
 
+exports.testRunTestSuiteDuplicateTests = function(test) {
+
+    var test1 = function () {
+    };
+
+    var testDetails = {
+        testName: "Test1",
+        topicName: "Topic1",
+        suiteName: "Suite1",
+        test: {
+            assert: test1
+        }
+    };
+    var suiteManager = SuiteManager.createSuiteManager();
+    suiteManager.runSuiteTest(testDetails);
+    suiteManager.runSuiteTest(testDetails);
+
+    var reporter = reporterFactory.createSuiteStoreReporter();
+    suiteManager.generateReport(reporter);
+
+    var suites = reporter.suites;
+    should.exist(suites.Suite1);
+    var topic = suites.Suite1.topics.Topic1;
+    should.exist(topic);
+    should.exist(topic.tests.Test1);
+    should.exist(topic.passed.Test1);
+    should.not.exist(topic.failed.Test1);
+    should.not.exist(topic.errors.Test1);
+
+    topic.name.should.equal("Topic1");
+    topic.testCount.should.equal(1);
+    topic.successCount.should.equal(1);
+    topic.failedCount.should.equal(0);
+    topic.errorCount.should.equal(0);
+
+    suites.Suite1.name.should.equal("Suite1");
+    suites.Suite1.testCount.should.equal(1);
+    suites.Suite1.successCount.should.equal(1);
+    suites.Suite1.failedCount.should.equal(0);
+    suites.Suite1.errorCount.should.equal(0);
+
+    test.done();
 };

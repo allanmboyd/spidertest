@@ -28,7 +28,7 @@
     },
     "scripts": {
         "start": "bin/cli.js",
-        "test": "./node_modules/jshint/bin/hint lib/spiderUtils.js lib/errors.js lib/Reporter.js lib/spider.js  lib/spiderOptions.js lib/spiderTest.js lib/suiteManager.js lib/reporters/ConsoleReporter.js lib/reporters/JUnitReporter.js lib/reporters/MultiFileJunitReporter.js test/testSpiderUtils.js test/testSpider.js test/testSuiteManager.js test/testSpiderTest.js bin/cli.js --config jshint-config.json && ./node_modules/nodeunit/bin/nodeunit test/testSpider.js test/testSuiteManager.js test/testSpiderTest.js test/testSpiderUtils.js"
+        "test": "./node_modules/jshint/bin/hint lib/spiderUtils.js lib/errors.js lib/Reporter.js lib/spider.js  lib/spiderOptions.js lib/spiderTest.js lib/suiteManager.js lib/reporters/ConsoleReporter.js lib/reporters/JUnitReporter.js lib/reporters/MultiFileJunitReporter.js test/testReporter.js test/testSpiderUtils.js test/testSpider.js test/testSuiteManager.js test/testSpiderTest.js bin/cli.js --config jshint-config.json && ./node_modules/nodeunit/bin/nodeunit test/testReporter.js test/testSpider.js test/testSuiteManager.js test/testSpiderTest.js test/testSpiderUtils.js"
     },
     "dependencies" : {
         "cheerio": "0.7.0",

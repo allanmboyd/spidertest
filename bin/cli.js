@@ -35,7 +35,6 @@ if (!spiderStart || !testDir) {
     process.exit(-1);
 } else {
     spiderStart = spiderStart.split(',');
-    console.log(spiderStart);
     spiderTest.runTests(spiderStart, testDir, null, null, reporters, config);
 }
 
