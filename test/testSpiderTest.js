@@ -1,8 +1,8 @@
-var Reporter = require("../lib/Reporter");
+var Reporter = require('../lib/Reporter');
 var reporterFactory = require('./testHelpers/reporterFactory');
-var express = require("express");
-var loadModule = require("./testHelpers/moduleLoader.js").loadModule;
-var should = require("should");
+var express = require('express');
+var loadModule = require('./testHelpers/moduleLoader.js').loadModule;
+var should = require('should');
 
 var spiderTestModule = loadModule("./lib/spiderTest.js");
 var spiderTest = require("../lib/spiderTest");
@@ -35,18 +35,18 @@ exports.testResolveUrls = function (test) {
     resolvedUrls.length.should.equal(2);
     url = resolvedUrls[0];
     "http:".should.equal(url.protocol);
-        "nodejs.org".should.equal(url.hostname);
-        "80".should.equal(url.port);
-        "/".should.equal(url.path);
-        "nodejs.org:80".should.equal(url.host);
-        "http://nodejs.org:80/".should.equal(url.href);
+    "nodejs.org".should.equal(url.hostname);
+    "80".should.equal(url.port);
+    "/".should.equal(url.path);
+    "nodejs.org:80".should.equal(url.host);
+    "http://nodejs.org:80/".should.equal(url.href);
 
     url = resolvedUrls[1];
     "localhost".should.equal(url.hostname);
     "80".should.equal(url.port);
     "localhost:80".should.equal(url.host);
     "http://localhost:80/".should.equal(url.href);
-    
+
     test.done();
 };
 
@@ -177,7 +177,7 @@ exports.testRunTests = function (test) {
     var serverPort = server.address().port;
 
     var reporter = reporterFactory.createCountingReporter();
-    
+
     var runAgain = function() {
         spiderTest.runTests("http://localhost:" + serverPort + "/testIndex.html",
             process.cwd() + "/" + "test/resources/spiderTests", function() {
@@ -231,15 +231,15 @@ exports.testRunTestsWithHeaders = function (test) {
             server.close();
 
             should.equal(reporter.suitesStartCount, 1, "there should be only 1 suitesStart call");
-            should.equal(reporter.suiteStartCount, 3, "there should be 3 suiteStart calls");
-            should.equal(reporter.topicStartCount, 7, "there should be 5 topicStart calls");
-            should.equal(reporter.testStartCount, 18, "there should be 15 testStart calls");
-            should.equal(reporter.successCount, 18, "there should be 15 successes");
+            should.equal(reporter.suiteStartCount, 6, "there should be 6 suiteStart calls");
+            should.equal(reporter.topicStartCount, 11, "there should be 11 topicStart calls");
+            should.equal(reporter.testStartCount, 22, "there should be 22 testStart calls");
+            should.equal(reporter.successCount, 22, "there should be 22 successes");
             should.equal(reporter.failedCount, 0, "there should be 0 failures");
             should.equal(reporter.errorCount, 0, "there should be no errors");
-            should.equal(reporter.testEndCount, 18, "there should be 15 testEnd calls");
-            should.equal(reporter.topicEndCount, 7, "there should be 5 topicEnd calls");
-            should.equal(reporter.suiteEndCount, 3, "there should be 3 suiteEnd calls");
+            should.equal(reporter.testEndCount, 22, "there should be 22 testEnd calls");
+            should.equal(reporter.topicEndCount, 11, "there should be 11 topicEnd calls");
+            should.equal(reporter.suiteEndCount, 6, "there should be 6 suiteEnd calls");
             should.equal(reporter.suitesEndCount, 1, "there should be 1 suitesEnd call");
 
             test.done();
@@ -265,11 +265,11 @@ exports.testRunTestsWithMultipleStartUrls = function (test) {
             should.equal(reporter.suitesStartCount, 1, "there should be only 1 suitesStart call");
             should.equal(reporter.suiteStartCount, 4, "there should be 3 suiteStart calls");
             should.equal(reporter.topicStartCount, 5, "there should be 5 topicStart calls");
-            should.equal(reporter.testStartCount, 16, "there should be 15 testStart calls");
-            should.equal(reporter.successCount, 16, "there should be 15 successes");
+            should.equal(reporter.testStartCount, 16, "there should be 16 testStart calls");
+            should.equal(reporter.successCount, 16, "there should be 16 successes");
             should.equal(reporter.failedCount, 0, "there should be 0 failures");
             should.equal(reporter.errorCount, 0, "there should be no errors");
-            should.equal(reporter.testEndCount, 16, "there should be 15 testEnd calls");
+            should.equal(reporter.testEndCount, 16, "there should be 16 testEnd calls");
             should.equal(reporter.topicEndCount, 5, "there should be 5 topicEnd calls");
             should.equal(reporter.suiteEndCount, 4, "there should be 3 suiteEnd calls");
             should.equal(reporter.suitesEndCount, 1, "there should be 1 suitesEnd call");
@@ -331,12 +331,60 @@ exports.testRunTestsWithPathSubstitutions = function (test) {
         }, null, reporter);
 };
 
+exports.testRunTestWithoutRetainedCookies = function (test) {
+
+    var server = startServer();
+    var serverPort = server.address().port;
+
+    var reporter = reporterFactory.createCountingReporter();
+
+    var nconf  = require('nconf');
+    nconf.use('memory');
+    nconf.set('retainCookies', 'false');
+
+    spiderTest.runTests(
+        "http://localhost:" + serverPort + "/testIndex.html",
+        process.cwd() + "/" + "test/resources/cookieTests",
+        function() {
+            server.close();
+
+            should.equal(reporter.suitesStartCount, 1, "there should be only 1 suitesStart call");
+            should.equal(reporter.suiteStartCount, 6, "there should be 6 suiteStart calls");
+            should.equal(reporter.topicStartCount, 6, "there should be 6 topicStart calls");
+            should.equal(reporter.testStartCount, 6, "there should be 6 testStart calls");
+            should.equal(reporter.successCount, 6, "there should be 6 successes");
+            should.equal(reporter.failedCount, 0, "there should be 0 failures");
+            should.equal(reporter.errorCount, 0, "there should be no errors");
+            should.equal(reporter.testEndCount, 6, "there should be 6 testEnd calls");
+            should.equal(reporter.topicEndCount, 6, "there should be 6 topicEnd calls");
+            should.equal(reporter.suiteEndCount, 6, "there should be 6 suiteEnd calls");
+            should.equal(reporter.suitesEndCount, 1, "there should be 1 suitesEnd call");
+
+            test.done();
+        },
+        null,
+        reporter,
+        nconf);
+};
+
 function startServer() {
 
     var server = express.createServer();
 
     server.configure(function() {
         server.use(server.router);
+        server.use(express.cookieParser());
+        server.use(function(req, res, next) {
+            for (var cookie in req.cookies) {
+                if (req.cookies.hasOwnProperty(cookie) && cookie !== 'servercookie') {
+                    res.cookie(cookie, req.cookies[cookie]);
+                }
+            }
+            if (!res.header['set-cookie']) {
+                res.cookie('servercookie', 'hello');
+            }
+            next();
+        });
         server.use(express["static"]("test/resources"));
     });
 

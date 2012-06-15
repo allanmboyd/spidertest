@@ -1,6 +1,6 @@
 {
     "name": "spidertest",
-    "version": "0.0.9",
+    "version": "0.0.10",
     "author": "Allan Boyd <millionyearsold@gmail.com>",
     "description": "A test framework for verifying links and HTTP requests and their responses with automated test generation.",
     "keywords": "spider, test automation",

@@ -44,9 +44,11 @@ exports.topics = {
                     should.equal("Android", spiderPayload.response.request.headers["user-agent"]);
                 }
             },
-            "There should be a cookie header in the request with a value of 'helloCookie=hello; byeCookie=bye'": {
+            "There should be a cookie header in the request with that contains cookies 'helloCookie=hello' and 'byeCookie=bye'": {
                 assert: function (spiderPayload) {
-                    should.equal("helloCookie=hello; byeCookie=bye", spiderPayload.response.request.headers["cookie"]);
+                    var cookieHeader = spiderPayload.response.request.headers["cookie"];
+                    cookieHeader.should.include("helloCookie=hello");
+                    cookieHeader.should.include("byeCookie=bye");
                 }
             }
         }
@@ -73,7 +75,8 @@ exports.topics = {
             "The request greeting cookie should be set to 'hello'": {
                 assert: function (spiderPayload) {
                     var cookieHeader = spiderPayload.response.request.headers["cookie"];
-                    should.equal("greeting=hello", cookieHeader);
+                    cookieHeader.should.include("greeting=hello");
+                    cookieHeader.should.not.include("greeting=ohaiyo");
                 }
             }    
         }
@@ -88,7 +91,18 @@ exports.topics = {
             "The request greeting cookie should be set to 'ohaiyo'": {
                 assert: function (spiderPayload) {
                     var cookieHeader = spiderPayload.response.request.headers["cookie"];
-                    should.equal("greeting=ohaiyo", cookieHeader);
+                    cookieHeader.should.include("greeting=ohaiyo");
+                    cookieHeader.should.not.include("greeting=hello");
+                }
+            }
+        }
+    },
+    "When retain cookies config setting is true - which is the default" : {
+        urlPattern: "//\.*/\.*/\.*$",
+        tests: {
+            "the server cookie named 'servercookie' should never be in the request path": {
+                assert: function (spiderPayload) {
+                    should.exist(spiderPayload.response.request.headers["cookie"]);
                 }
             }
         }
