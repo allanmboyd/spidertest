@@ -53,7 +53,6 @@ TODO
 - Allow multiple sets of request headers to be specifed for a given topic,
 - Try to include the URL from which a failing test is called from - referer maybe?
 - Allow path variables in topic names
-- Allow spidering to be restricted from test definitions
 - Expose more options
 - Allow request parameters to be specified in test definitions
 - Allow tests to be selected based on response header values
@@ -384,6 +383,43 @@ syntax is with an example:
             }
         }
     };
+
+### Limit Spidering within Test Definition ###
+
+Using the _@continueSpidering_ directive from within a topic.tests definition, spidering can be halted at the level of
+the topic. When a @continueSpidering directive whose value is _false_ (boolean) is encountered the spider that hit
+that topic will not spider further down its current path.
+
+In the example below the _testIndex.html_ page contains a link to _anotherPage.html_. Normally this would cause
+the spider to go to _anotherPage.html_. However, in this instance that does not happen because there
+is a _@continueSpidering_ directive that prevents the spider from traversing links within the _testIndex.html_ page.
+
+    exports.topics = {
+        "Index tests" : {
+            urlPattern: "testIndex.html",
+            tests: {
+                '@continueSpidering': false,                        // don't continue spidering
+                "The first css reference should be a link to testCss/some.css": {
+                    assert: function (spiderPayload, $) {
+                        var link = $("head").find("link")[0];
+                        var linkHref = link.attribs.href;
+                        linkHref.should.equal("testCss/some.css");
+                    }
+                }
+            }
+        },
+        "Another Page tests" : {                                    // this topic is not executed because spidering has stopped
+            urlPattern: "anotherPage.html",
+            tests: {
+                "Ensure that when spidering is stopped be a previous test, that spidering does indeed stop": {
+                    assert: function () {
+                        ("This test should not be executed").should.not.be.ok;
+                    }
+                }
+            }
+        }
+    };
+
 
 HowTo
 -----

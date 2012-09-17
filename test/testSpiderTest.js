@@ -367,6 +367,32 @@ exports.testRunTestWithoutRetainedCookies = function (test) {
         nconf);
 };
 
+exports.testStopSpideringWithinTestDefinition = function (test) {
+    var server = startServer();
+    var serverPort = server.address().port;
+
+    var reporter = reporterFactory.createCountingReporter();
+
+    spiderTest.runTests("http://localhost:" + serverPort + "/testIndex.html",
+        process.cwd() + "/" + "test/resources/spiderStopTests", function() {
+            server.close();
+
+            should.equal(reporter.suitesStartCount, 1, "there should be only 1 suitesStart call");
+            should.equal(reporter.suiteStartCount, 1, "there should be 1 suiteStart calls");
+            should.equal(reporter.topicStartCount, 1, "there should be 1 topicStart calls");
+            should.equal(reporter.testStartCount, 1, "there should be 1 testStart calls");
+            should.equal(reporter.successCount, 1, "there should be 1 successes");
+            should.equal(reporter.failedCount, 0, "there should be 0 failures");
+            should.equal(reporter.errorCount, 0, "there should be no errors");
+            should.equal(reporter.testEndCount, 1, "there should be 1 testEnd calls");
+            should.equal(reporter.topicEndCount, 1, "there should be 1 topicEnd calls");
+            should.equal(reporter.suiteEndCount, 1, "there should be 1 suiteEnd calls");
+            should.equal(reporter.suitesEndCount, 1, "there should be 1 suitesEnd call");
+
+            test.done();
+        }, null, reporter);
+};
+
 function startServer() {
 
     var server = express.createServer();
