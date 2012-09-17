@@ -386,13 +386,13 @@ syntax is with an example:
 
 ### Limit Spidering within Test Definition ###
 
-Using the _@continueSpidering_ directive from within a topic.tests definition, spidering can be halted at the level of
-the topic. When a @continueSpidering directive whose value is _false_ (boolean) is encountered the spider that hit
+Using the __@continueSpidering__ directive from within a topic.tests definition, spidering can be halted at the level of
+the topic. When a __@continueSpidering__ directive whose value is __false__ (boolean) is encountered the spider that hit
 that topic will not spider further down its current path.
 
-In the example below the _testIndex.html_ page contains a link to _anotherPage.html_. Normally this would cause
+In the example below the __testIndex.html__ page contains a link to __anotherPage.html__. Normally this would cause
 the spider to go to _anotherPage.html_. However, in this instance that does not happen because there
-is a _@continueSpidering_ directive that prevents the spider from traversing links within the _testIndex.html_ page.
+is a __@continueSpidering__ directive that prevents the spider from traversing links within the __testIndex.html__ page.
 
     exports.topics = {
         "Index tests" : {
